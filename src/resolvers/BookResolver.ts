@@ -30,4 +30,12 @@ export class BookResolver {
     await book.save()
     return book
   }
+
+  @Mutation(() => Boolean)
+  async deleteBook(@Arg('id') id: string) {
+    const book = await Book.findOne({ where: { id } })
+    if (!book) throw new Error('Book not found')
+    await book.remove()
+    return true
+  }
 }
