@@ -9,7 +9,7 @@ async function main() {
   const connection = await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
-    entities: ['.src/models/*.ts'],
+    entities: ['./src/models/*.ts'],
     synchronize: true,
   })
   const schema = await buildSchema({
