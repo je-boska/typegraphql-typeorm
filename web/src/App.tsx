@@ -1,5 +1,6 @@
 import './App.css'
 import { useBooksQuery } from './generated/graphql'
+import { Flex, Box, Text, Heading } from '@chakra-ui/react'
 
 const App = () => {
   const { data } = useBooksQuery()
@@ -9,15 +10,19 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Flex>
       {data.books.map(book => (
-        <div key={book.id}>
-          <h1>{book.title}</h1>
-          <p>{book.author}</p>
-          {book.isPublished ? <p>Published</p> : <p>Not Published</p>}
-        </div>
+        <Box key={book.id}>
+          <Heading>{book.title}</Heading>
+          <Text>{book.author}</Text>
+          {book.isPublished ? (
+            <Text>Published</Text>
+          ) : (
+            <Text>Not Published</Text>
+          )}
+        </Box>
       ))}
-    </div>
+    </Flex>
   )
 }
 
