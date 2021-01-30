@@ -6,3 +6,12 @@ query Books {
     isPublished
   }
 }
+
+mutation CreateBook($data: CreateBookInput!) {
+  createBook(data: $data) {
+    id
+    title
+    author
+    isPublished
+  }
+}
