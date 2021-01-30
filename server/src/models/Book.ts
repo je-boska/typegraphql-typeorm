@@ -2,8 +2,8 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 
 // This class represent both the GraphQL object type, and the db model
-@Entity()
 @ObjectType()
+@Entity()
 export class Book extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
