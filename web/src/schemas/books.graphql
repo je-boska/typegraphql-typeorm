@@ -7,6 +7,13 @@ query Books {
   }
 }
 
+query Book($id: String!) {
+  book(id: $id) {
+    title
+    author
+  }
+}
+
 mutation CreateBook($data: CreateBookInput!) {
   createBook(data: $data) {
     id
@@ -14,4 +21,8 @@ mutation CreateBook($data: CreateBookInput!) {
     author
     isPublished
   }
+}
+
+mutation DeleteBook($id: String!) {
+  deleteBook(id: $id)
 }
