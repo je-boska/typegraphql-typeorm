@@ -23,6 +23,14 @@ mutation CreateBook($data: CreateBookInput!) {
   }
 }
 
+mutation UpdateBook($id: String!, $data: UpdateBookInput!) {
+  updateBook(id: $id, data: $data) {
+    title
+    author
+    isPublished
+  }
+}
+
 mutation DeleteBook($id: String!) {
   deleteBook(id: $id)
 }
