@@ -114,7 +114,7 @@ const App = () => {
 
   return (
     <Container maxWidth='100%' centerContent>
-      <Heading size='3xl' m={8} mb={2} opacity='0.3'>
+      <Heading size='4xl' m={8} mb={2} opacity='0.1'>
         Bookshelf
       </Heading>
       <Box>
@@ -130,6 +130,7 @@ const App = () => {
           <Box m={8}>
             {books.map(book => (
               <Book
+                key={book.id}
                 book={book}
                 deleteBook={deleteBookHandler}
                 selectBook={selectBookHandler}

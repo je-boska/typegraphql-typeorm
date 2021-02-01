@@ -37,8 +37,8 @@ export const BookForm: React.FC<BookFormProps> = ({
       m={8}
       maxWidth='500px'
       boxShadow='lg'
-      borderWidth={1}
       borderRadius={8}
+      borderWidth={1}
     >
       <form
         onSubmit={e => {

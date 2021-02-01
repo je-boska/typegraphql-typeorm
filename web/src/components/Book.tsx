@@ -28,7 +28,7 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Delete Book</ModalHeader>
@@ -41,18 +41,19 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
                 deleteBook(book.id)
               }}
               mr={3}
+              bgColor='red.400'
             >
-              Yes
+              Delete
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Flex key={book.id}>
-        <Button m='0px 20px' onClick={onOpen} bgColor='transparent'>
+      <Flex>
+        <Button onClick={onOpen} bgColor='transparent'>
           <DeleteIcon />
         </Button>
-        <Box pb='30px'>
+        <Box pb={4}>
           <Heading size='lg' onClick={() => selectBook(book)} cursor='pointer'>
             {book.title}
           </Heading>
