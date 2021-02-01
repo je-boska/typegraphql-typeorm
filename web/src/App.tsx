@@ -128,7 +128,11 @@ const App = () => {
         <Box width='50%' m={8}>
           {books.map(book => (
             <Flex key={book.id}>
-              <Button m='20px' onClick={() => deleteBookHandler(book.id)}>
+              <Button
+                m='0px 20px'
+                onClick={() => deleteBookHandler(book.id)}
+                backgroundColor='transparent'
+              >
                 <DeleteIcon />
               </Button>
               <Box width='500px' paddingBottom='30px'>
