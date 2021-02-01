@@ -6,10 +6,19 @@ import {
   useDeleteBookMutation,
   useUpdateBookMutation,
 } from './generated/graphql'
-import { Flex, Box, Text, Heading, Container } from '@chakra-ui/react'
+import {
+  Flex,
+  Box,
+  Text,
+  Heading,
+  Container,
+  useColorMode,
+  IconButton,
+} from '@chakra-ui/react'
 import { BookForm } from './components/BookForm'
 import { Book } from './components/Book'
 import { BookType } from './types'
+import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 const App = () => {
   const [title, setTitle] = useState('')
@@ -24,6 +33,7 @@ const App = () => {
   const [createBook] = useCreateBookMutation()
   const [updateBook] = useUpdateBookMutation()
   const [deleteBook] = useDeleteBookMutation()
+  const { colorMode, toggleColorMode } = useColorMode()
 
   async function handleSubmit() {
     const { data: bookData } = await createBook({
@@ -104,45 +114,57 @@ const App = () => {
 
   return (
     <Container maxWidth='100%' centerContent>
-      <Heading size='3xl' m={8}>
+      <Heading size='3xl' m={8} mb={2} opacity='0.3'>
         Bookshelf
       </Heading>
-      <Flex justify='center'>
-        <Box width='50%' m={8}>
-          {books.map(book => (
-            <Book
-              book={book}
-              deleteBook={deleteBookHandler}
-              selectBook={selectBookHandler}
-            />
-          ))}
-        </Box>
-        <Box>
-          <BookForm
-            heading='Add Book'
-            onSubmit={handleSubmit}
-            title={title}
-            setTitle={setTitle}
-            author={author}
-            setAuthor={setAuthor}
-            isPublished={isPublished}
-            setIsPublished={setIsPublished}
-          />
-          {updateId && (
-            <BookForm
-              heading='Update Book'
-              onSubmit={handleUpdateSubmit}
-              cancel={resetUpdateForm}
-              title={updateTitle}
-              setTitle={setUpdateTitle}
-              author={updateAuthor}
-              setAuthor={setUpdateAuthor}
-              isPublished={updateIsPublished}
-              setIsPublished={setUpdateIsPublished}
-            />
-          )}
-        </Box>
-      </Flex>
+      <Box>
+        <IconButton
+          aria-label='Change color mode'
+          onClick={toggleColorMode}
+          bgColor='transparent'
+          float='right'
+          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        />
+        <br />
+        <Flex justify='center' direction='row-reverse'>
+          <Box m={8}>
+            {books.map(book => (
+              <Book
+                book={book}
+                deleteBook={deleteBookHandler}
+                selectBook={selectBookHandler}
+              />
+            ))}
+          </Box>
+          <Box>
+            {!updateId && (
+              <BookForm
+                heading='Add Book'
+                onSubmit={handleSubmit}
+                title={title}
+                setTitle={setTitle}
+                author={author}
+                setAuthor={setAuthor}
+                isPublished={isPublished}
+                setIsPublished={setIsPublished}
+              />
+            )}
+            {updateId && (
+              <BookForm
+                heading='Update Book'
+                onSubmit={handleUpdateSubmit}
+                cancel={resetUpdateForm}
+                title={updateTitle}
+                setTitle={setUpdateTitle}
+                author={updateAuthor}
+                setAuthor={setUpdateAuthor}
+                isPublished={updateIsPublished}
+                setIsPublished={setUpdateIsPublished}
+              />
+            )}
+          </Box>
+        </Flex>
+      </Box>
     </Container>
   )
 }

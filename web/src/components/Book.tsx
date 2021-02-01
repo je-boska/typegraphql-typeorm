@@ -49,10 +49,10 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
         </ModalContent>
       </Modal>
       <Flex key={book.id}>
-        <Button m='0px 20px' onClick={onOpen} backgroundColor='transparent'>
+        <Button m='0px 20px' onClick={onOpen} bgColor='transparent'>
           <DeleteIcon />
         </Button>
-        <Box width='500px' paddingBottom='30px'>
+        <Box pb='30px'>
           <Heading size='lg' onClick={() => selectBook(book)} cursor='pointer'>
             {book.title}
           </Heading>
