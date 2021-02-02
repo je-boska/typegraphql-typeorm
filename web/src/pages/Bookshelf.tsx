@@ -134,18 +134,17 @@ const Bookshelf = () => {
       <Heading size='4xl' m={8} mb={2} opacity='0.1'>
         /||
       </Heading>
-      <Box>
-        <Button onClick={logoutHandler} float='right'>
-          Log out
-        </Button>
+      <Flex width='100%' justify='flex-end'>
         <IconButton
+          mr={4}
           aria-label='Change color mode'
           onClick={toggleColorMode}
           bgColor='transparent'
-          float='right'
           icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         />
-        <br />
+        <Button onClick={logoutHandler}>Log out</Button>
+      </Flex>
+      <Box>
         <Flex justify='center' direction='row-reverse'>
           <Box m={8}>
             {books.map(book => (

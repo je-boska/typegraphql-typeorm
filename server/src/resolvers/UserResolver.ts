@@ -32,6 +32,7 @@ export class UserResolver {
   async register(@Arg('data') data: RegisterUserInput) {
     const hashedPassword = await argon2.hash(data.password)
     let user
+    let token
     try {
       user = User.create({
         name: data.name,
@@ -39,6 +40,7 @@ export class UserResolver {
         password: hashedPassword,
       })
       await user.save()
+      token = generateToken(user.id)
     } catch (err) {
       if (err.code === '23505' || err.detail.includes('already exists')) {
         return {
@@ -51,8 +53,7 @@ export class UserResolver {
         }
       }
     }
-
-    return { user }
+    return { user, token }
   }
 
   @Mutation(() => UserResponse)

@@ -7,17 +7,17 @@ import {
   Container,
   FormLabel,
   Input,
-  Link as ChakraLink,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { useLoginMutation } from '../generated/graphql'
-import { Link, useHistory } from 'react-router-dom'
+import { useRegisterMutation } from '../generated/graphql'
+import { useHistory } from 'react-router-dom'
 
-const Login: React.FC<{}> = () => {
+const Register: React.FC<{}> = () => {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [login] = useLoginMutation()
+  const [register] = useRegisterMutation()
   const history = useHistory()
   const [token, setToken] = useState('')
 
@@ -30,14 +30,16 @@ const Login: React.FC<{}> = () => {
 
   async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const { data } = await login({ variables: { data: { email, password } } })
-    if (data?.login.errors) {
-      setError(data.login.errors[0].message)
+    const { data } = await register({
+      variables: { data: { name, email, password } },
+    })
+    if (data?.register.errors) {
+      setError(data.register.errors[0].message)
     }
-    if (data?.login.token) {
+    if (data?.register.token) {
       setError('')
-      localStorage.setItem('user-token', data.login.token)
-      setToken(data.login.token)
+      localStorage.setItem('user-token', data.register.token)
+      setToken(data.register.token)
     }
   }
 
@@ -45,6 +47,8 @@ const Login: React.FC<{}> = () => {
     <Container centerContent>
       <Box width={250} mt={20}>
         <form onSubmit={e => submitHandler(e)}>
+          <FormLabel>Name</FormLabel>
+          <Input mb={4} value={name} onChange={e => setName(e.target.value)} />
           <FormLabel>Email</FormLabel>
           <Input
             mb={4}
@@ -64,18 +68,11 @@ const Login: React.FC<{}> = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          <span>New here? </span>
-          <ChakraLink color='blue.500'>
-            <Link to='/register'>Register</Link>
-          </ChakraLink>
-          <br />
-          <Button type='submit' mt={4}>
-            Log in
-          </Button>
+          <Button type='submit'>Log in</Button>
         </form>
       </Box>
     </Container>
   )
 }
 
-export default Login
+export default Register

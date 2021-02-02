@@ -11,3 +11,17 @@ mutation Login($data: LoginUserInput!) {
     token
   }
 }
+
+mutation Register($data: RegisterUserInput!) {
+  register(data: $data) {
+    user {
+      name
+      email
+    }
+    errors {
+      field
+      message
+    }
+    token
+  }
+}
