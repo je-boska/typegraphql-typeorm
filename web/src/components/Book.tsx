@@ -50,7 +50,7 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
         </ModalContent>
       </Modal>
       <Flex>
-        <Button onClick={onOpen} bgColor='transparent'>
+        <Button mr={2} onClick={onOpen} bgColor='transparent'>
           <DeleteIcon />
         </Button>
         <Box pb={4}>

@@ -4,6 +4,7 @@ import { createConnection } from 'typeorm'
 import { ApolloServer } from 'apollo-server'
 import { buildSchema } from 'type-graphql'
 import { BookResolver } from './resolvers/BookResolver'
+import { UserResolver } from './resolvers/UserResolver'
 
 async function main() {
   const connection = await createConnection({
@@ -14,9 +15,14 @@ async function main() {
     logging: true,
   })
   const schema = await buildSchema({
-    resolvers: [BookResolver],
+    resolvers: [BookResolver, UserResolver],
   })
-  const server = new ApolloServer({ schema })
+  const server = new ApolloServer({
+    schema,
+    // context: ({ req }) => {
+    //     console.log(req.headers.authorization || 'no authorization')
+    //   },
+  })
   await server.listen(4000)
   console.log('Server is running on port 4000')
 }

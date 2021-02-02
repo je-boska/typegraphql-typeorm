@@ -115,7 +115,7 @@ const App = () => {
   return (
     <Container maxWidth='100%' centerContent>
       <Heading size='4xl' m={8} mb={2} opacity='0.1'>
-        Bookshelf
+        /||
       </Heading>
       <Box>
         <IconButton
