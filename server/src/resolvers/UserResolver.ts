@@ -1,9 +1,10 @@
-import { Arg, Field, Mutation, ObjectType, Resolver } from 'type-graphql'
+import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql'
 import { RegisterUserInput } from '../inputs/RegisterUserInput'
 import { User } from '../models/User'
 import argon2 from 'argon2'
 import { LoginUserInput } from '../inputs/LoginUserInput'
 import generateToken from '../utils/generateToken'
+import { getRepository } from 'typeorm'
 
 @ObjectType()
 class FieldError {
@@ -28,6 +29,12 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User)
+  async user(@Arg('id') id: string) {
+    const user = await User.findOne({ id }, { relations: ['books'] })
+    return user
+  }
+
   @Mutation(() => UserResponse)
   async register(@Arg('data') data: RegisterUserInput) {
     const hashedPassword = await argon2.hash(data.password)

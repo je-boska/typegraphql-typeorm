@@ -5,6 +5,7 @@ import { ApolloServer } from 'apollo-server'
 import { buildSchema } from 'type-graphql'
 import { BookResolver } from './resolvers/BookResolver'
 import { UserResolver } from './resolvers/UserResolver'
+import { Book } from './models/Book'
 
 async function main() {
   const connection = await createConnection({
@@ -14,15 +15,17 @@ async function main() {
     synchronize: true,
     logging: true,
   })
+
+  // await Book.delete({})
+
   const schema = await buildSchema({
     resolvers: [BookResolver, UserResolver],
   })
+
   const server = new ApolloServer({
     schema,
-    // context: ({ req }) => {
-    //     console.log(req.headers.authorization || 'no authorization')
-    //   },
   })
+
   await server.listen(4000)
   console.log('Server is running on port 4000')
 }

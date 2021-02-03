@@ -17,6 +17,7 @@ export type Query = {
   __typename?: 'Query';
   books: Array<Book>;
   book: Book;
+  user: User;
 };
 
 
@@ -24,12 +25,26 @@ export type QueryBookArgs = {
   id: Scalars['String'];
 };
 
+
+export type QueryUserArgs = {
+  id: Scalars['String'];
+};
+
 export type Book = {
   __typename?: 'Book';
-  id: Scalars['ID'];
+  id: Scalars['String'];
   title: Scalars['String'];
   author: Scalars['String'];
   isPublished: Scalars['Boolean'];
+  user: User;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['String'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  books: Array<Book>;
 };
 
 export type Mutation = {
@@ -43,6 +58,7 @@ export type Mutation = {
 
 
 export type MutationCreateBookArgs = {
+  userId: Scalars['String'];
   data: CreateBookInput;
 };
 
@@ -92,14 +108,6 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
 export type RegisterUserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
@@ -119,6 +127,10 @@ export type BooksQuery = (
   & { books: Array<(
     { __typename?: 'Book' }
     & Pick<Book, 'id' | 'title' | 'author' | 'isPublished'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'name'>
+    ) }
   )> }
 );
 
@@ -137,6 +149,7 @@ export type BookQuery = (
 
 export type CreateBookMutationVariables = Exact<{
   data: CreateBookInput;
+  userId: Scalars['String'];
 }>;
 
 
@@ -145,6 +158,10 @@ export type CreateBookMutation = (
   & { createBook: (
     { __typename?: 'Book' }
     & Pick<Book, 'id' | 'title' | 'author' | 'isPublished'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'name'>
+    ) }
   ) }
 );
 
@@ -184,7 +201,7 @@ export type LoginMutation = (
     & Pick<UserResponse, 'token'>
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'name' | 'email'>
+      & Pick<User, 'id' | 'name' | 'email'>
     )>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -204,7 +221,7 @@ export type RegisterMutation = (
     & Pick<UserResponse, 'token'>
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'name' | 'email'>
+      & Pick<User, 'id' | 'name' | 'email'>
     )>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -220,6 +237,9 @@ export const BooksDocument = gql`
     title
     author
     isPublished
+    user {
+      name
+    }
   }
 }
     `;
@@ -283,12 +303,15 @@ export type BookQueryHookResult = ReturnType<typeof useBookQuery>;
 export type BookLazyQueryHookResult = ReturnType<typeof useBookLazyQuery>;
 export type BookQueryResult = Apollo.QueryResult<BookQuery, BookQueryVariables>;
 export const CreateBookDocument = gql`
-    mutation CreateBook($data: CreateBookInput!) {
-  createBook(data: $data) {
+    mutation CreateBook($data: CreateBookInput!, $userId: String!) {
+  createBook(data: $data, userId: $userId) {
     id
     title
     author
     isPublished
+    user {
+      name
+    }
   }
 }
     `;
@@ -308,6 +331,7 @@ export type CreateBookMutationFn = Apollo.MutationFunction<CreateBookMutation, C
  * const [createBookMutation, { data, loading, error }] = useCreateBookMutation({
  *   variables: {
  *      data: // value for 'data'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -386,6 +410,7 @@ export const LoginDocument = gql`
     mutation Login($data: LoginUserInput!) {
   login(data: $data) {
     user {
+      id
       name
       email
     }
@@ -426,6 +451,7 @@ export const RegisterDocument = gql`
     mutation Register($data: RegisterUserInput!) {
   register(data: $data) {
     user {
+      id
       name
       email
     }

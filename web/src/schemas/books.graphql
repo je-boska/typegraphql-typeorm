@@ -4,6 +4,9 @@ query Books {
     title
     author
     isPublished
+    user {
+      name
+    }
   }
 }
 
@@ -14,12 +17,15 @@ query Book($id: String!) {
   }
 }
 
-mutation CreateBook($data: CreateBookInput!) {
-  createBook(data: $data) {
+mutation CreateBook($data: CreateBookInput!, $userId: String!) {
+  createBook(data: $data, userId: $userId) {
     id
     title
     author
     isPublished
+    user {
+      name
+    }
   }
 }
 

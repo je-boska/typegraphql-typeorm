@@ -58,6 +58,7 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
             {book.title}
           </Heading>
           <Text>{book.author}</Text>
+          <Text>by {book.user.name}</Text>
           {book.isPublished ? (
             <Text color='blue.500'>Published</Text>
           ) : (

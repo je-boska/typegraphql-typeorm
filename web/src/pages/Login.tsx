@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { useLoginMutation } from '../generated/graphql'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const Login: React.FC<{}> = () => {
   const [email, setEmail] = useState('')
@@ -37,6 +37,7 @@ const Login: React.FC<{}> = () => {
     if (data?.login.token) {
       setError('')
       localStorage.setItem('user-token', data.login.token)
+      localStorage.setItem('user', JSON.stringify(data.login.user))
       setToken(data.login.token)
     }
   }
@@ -65,8 +66,8 @@ const Login: React.FC<{}> = () => {
             </Alert>
           )}
           <span>New here? </span>
-          <ChakraLink color='blue.500'>
-            <Link to='/register'>Register</Link>
+          <ChakraLink href='/register' color='blue.500'>
+            Register
           </ChakraLink>
           <br />
           <Button type='submit' mt={4}>

@@ -1,6 +1,7 @@
 mutation Login($data: LoginUserInput!) {
   login(data: $data) {
     user {
+      id
       name
       email
     }
@@ -15,6 +16,7 @@ mutation Login($data: LoginUserInput!) {
 mutation Register($data: RegisterUserInput!) {
   register(data: $data) {
     user {
+      id
       name
       email
     }

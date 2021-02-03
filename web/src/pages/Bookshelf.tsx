@@ -54,10 +54,12 @@ const Bookshelf = () => {
 
   async function handleSubmit() {
     const { data: bookData } = await createBook({
-      variables: { data: { title, author, isPublished } },
+      variables: { data: { title, author, isPublished }, userId: '19' },
     })
+    console.log(bookData)
     if (bookData) {
-      setBooks(books.concat(bookData.createBook))
+      const newBooks = books.concat(bookData.createBook)
+      setBooks(newBooks)
     }
     resetAddForm()
   }

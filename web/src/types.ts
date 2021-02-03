@@ -3,4 +3,9 @@ export type BookType = {
   title: string
   author: string
   isPublished: boolean
+  user: UserType
+}
+
+export type UserType = {
+  name: string
 }

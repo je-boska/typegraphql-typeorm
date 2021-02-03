@@ -1,23 +1,33 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm'
-import { ObjectType, Field, ID } from 'type-graphql'
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+} from 'typeorm'
+import { ObjectType, Field } from 'type-graphql'
+import { User } from './User'
 
-// This class represent both the GraphQL object type, and the db model
 @ObjectType()
 @Entity()
 export class Book extends BaseEntity {
-  @Field(() => ID)
+  @Field()
   @PrimaryGeneratedColumn()
   id!: string
 
-  @Field(() => String)
+  @Field()
   @Column()
   title!: string
 
-  @Field(() => String)
+  @Field()
   @Column()
   author!: string
 
-  @Field(() => Boolean)
+  @Field()
   @Column({ default: false })
-  isPublished: boolean
+  isPublished!: boolean
+
+  @Field()
+  @ManyToOne(() => User, user => user.books)
+  user: User
 }
