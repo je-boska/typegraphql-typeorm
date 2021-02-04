@@ -10,7 +10,7 @@ import { User } from './User'
 
 @ObjectType()
 @Entity()
-export class Book extends BaseEntity {
+export class Post extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: string
@@ -21,13 +21,9 @@ export class Book extends BaseEntity {
 
   @Field()
   @Column()
-  author!: string
+  body!: string
 
   @Field()
-  @Column({ default: false })
-  isPublished!: boolean
-
-  @Field()
-  @ManyToOne(() => User, user => user.books)
+  @ManyToOne(() => User, user => user.posts)
   user: User
 }

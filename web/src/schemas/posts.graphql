@@ -1,0 +1,42 @@
+query Posts {
+  posts {
+    id
+    title
+    body
+    user {
+      name
+    }
+  }
+}
+
+query Post($id: String!) {
+  post(id: $id) {
+    title
+    body
+    user {
+      name
+    }
+  }
+}
+
+mutation CreatePost($data: CreatePostInput!, $userId: String!) {
+  createPost(data: $data, userId: $userId) {
+    id
+    title
+    body
+    user {
+      name
+    }
+  }
+}
+
+mutation UpdatePost($id: String!, $data: UpdatePostInput!) {
+  updatePost(id: $id, data: $data) {
+    title
+    body
+  }
+}
+
+mutation DeletePost($id: String!) {
+  deletePost(id: $id)
+}

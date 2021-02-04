@@ -6,7 +6,7 @@ import {
   OneToMany,
 } from 'typeorm'
 import { Field, ObjectType } from 'type-graphql'
-import { Book } from './Book'
+import { Post } from './Post'
 
 @ObjectType()
 @Entity()
@@ -19,14 +19,13 @@ export class User extends BaseEntity {
   @Column()
   name!: string
 
-  @Field()
   @Column({ unique: true })
   email!: string
 
   @Column()
   password!: string
 
-  @Field(() => [Book])
-  @OneToMany(() => Book, book => book.user)
-  books: Book[]
+  @Field(() => [Post])
+  @OneToMany(() => Post, post => post.user)
+  posts: Post[]
 }

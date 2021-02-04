@@ -15,15 +15,15 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { DeleteIcon } from '@chakra-ui/icons'
-import { BookType } from '../types'
+import { PostType } from '../types'
 
-interface BookProps {
-  book: BookType
-  deleteBook: (id: string) => void
-  selectBook: (book: BookType) => void
+interface PostProps {
+  post: PostType
+  deletePost: (id: string) => void
+  selectPost: (post: PostType) => void
 }
 
-export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
+export const Post: React.FC<PostProps> = ({ post, deletePost, selectPost }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -31,14 +31,14 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
       <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Delete Book</ModalHeader>
-          <ModalBody>Are you sure you want to delete this book?</ModalBody>
+          <ModalHeader>Delete Post</ModalHeader>
+          <ModalBody>Are you sure you want to delete this post?</ModalBody>
           <ModalCloseButton />
           <ModalFooter>
             <Button
               onClick={() => {
                 onClose()
-                deleteBook(book.id)
+                deletePost(post.id)
               }}
               mr={3}
               bgColor='red.400'
@@ -49,22 +49,22 @@ export const Book: React.FC<BookProps> = ({ book, deleteBook, selectBook }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Flex>
-        <Button mr={2} onClick={onOpen} bgColor='transparent'>
+      <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mb={8}>
+        <Box>
+          <Heading
+            size='md'
+            mb={2}
+            onClick={() => selectPost(post)}
+            cursor='pointer'
+          >
+            {post.title}
+          </Heading>
+          <Text>{post.body}</Text>
+          <Text>by {post.user.name}</Text>
+        </Box>
+        <Button onClick={onOpen} bgColor='transparent'>
           <DeleteIcon />
         </Button>
-        <Box pb={4}>
-          <Heading size='lg' onClick={() => selectBook(book)} cursor='pointer'>
-            {book.title}
-          </Heading>
-          <Text>{book.author}</Text>
-          <Text>by {book.user.name}</Text>
-          {book.isPublished ? (
-            <Text color='blue.500'>Published</Text>
-          ) : (
-            <Text color='red.300'>Not Published</Text>
-          )}
-        </Box>
       </Flex>
     </>
   )

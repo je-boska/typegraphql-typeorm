@@ -3,9 +3,8 @@ import 'dotenv-safe/config'
 import { createConnection } from 'typeorm'
 import { ApolloServer } from 'apollo-server'
 import { buildSchema } from 'type-graphql'
-import { BookResolver } from './resolvers/BookResolver'
+import { PostResolver } from './resolvers/PostResolver'
 import { UserResolver } from './resolvers/UserResolver'
-import { Book } from './models/Book'
 
 async function main() {
   const connection = await createConnection({
@@ -16,10 +15,8 @@ async function main() {
     logging: true,
   })
 
-  // await Book.delete({})
-
   const schema = await buildSchema({
-    resolvers: [BookResolver, UserResolver],
+    resolvers: [PostResolver, UserResolver],
   })
 
   const server = new ApolloServer({

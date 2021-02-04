@@ -1,13 +1,10 @@
 import { InputType, Field } from 'type-graphql'
 
 @InputType()
-export class CreateBookInput {
+export class CreatePostInput {
   @Field()
   title: string
 
   @Field()
-  author: string
-
-  @Field()
-  isPublished: boolean
+  body: string
 }

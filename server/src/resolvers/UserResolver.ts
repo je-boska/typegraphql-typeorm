@@ -29,6 +29,11 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => [User])
+  async users() {
+    return User.find()
+  }
+
   @Query(() => User)
   async user(@Arg('id') id: string) {
     const user = await User.findOne({ id }, { relations: ['books'] })

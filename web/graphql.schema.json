@@ -14,7 +14,7 @@
         "description": null,
         "fields": [
           {
-            "name": "books",
+            "name": "posts",
             "description": null,
             "args": [],
             "type": {
@@ -28,7 +28,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Book",
+                    "name": "Post",
                     "ofType": null
                   }
                 }
@@ -38,7 +38,7 @@
             "deprecationReason": null
           },
           {
-            "name": "book",
+            "name": "post",
             "description": null,
             "args": [
               {
@@ -63,8 +63,32 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Book",
+                "name": "Post",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "users",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "User",
+                    "ofType": null
+                  }
+                }
               }
             },
             "isDeprecated": false,
@@ -121,7 +145,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "Book",
+        "name": "Post",
         "description": null,
         "fields": [
           {
@@ -157,7 +181,7 @@
             "deprecationReason": null
           },
           {
-            "name": "author",
+            "name": "body",
             "description": null,
             "args": [],
             "type": {
@@ -166,22 +190,6 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "isPublished",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -207,16 +215,6 @@
         ],
         "inputFields": null,
         "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Boolean",
-        "description": "The `Boolean` scalar type represents `true` or `false`.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -258,23 +256,7 @@
             "deprecationReason": null
           },
           {
-            "name": "email",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "books",
+            "name": "posts",
             "description": null,
             "args": [],
             "type": {
@@ -288,7 +270,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "Book",
+                    "name": "Post",
                     "ofType": null
                   }
                 }
@@ -309,7 +291,7 @@
         "description": null,
         "fields": [
           {
-            "name": "createBook",
+            "name": "createPost",
             "description": null,
             "args": [
               {
@@ -336,7 +318,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "CreateBookInput",
+                    "name": "CreatePostInput",
                     "ofType": null
                   }
                 },
@@ -350,7 +332,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Book",
+                "name": "Post",
                 "ofType": null
               }
             },
@@ -358,7 +340,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateBook",
+            "name": "updatePost",
             "description": null,
             "args": [
               {
@@ -369,7 +351,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "UpdateBookInput",
+                    "name": "UpdatePostInput",
                     "ofType": null
                   }
                 },
@@ -399,7 +381,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Book",
+                "name": "Post",
                 "ofType": null
               }
             },
@@ -407,7 +389,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteBook",
+            "name": "deletePost",
             "description": null,
             "args": [
               {
@@ -512,8 +494,18 @@
         "possibleTypes": null
       },
       {
+        "kind": "SCALAR",
+        "name": "Boolean",
+        "description": "The `Boolean` scalar type represents `true` or `false`.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "INPUT_OBJECT",
-        "name": "CreateBookInput",
+        "name": "CreatePostInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -534,7 +526,7 @@
             "deprecationReason": null
           },
           {
-            "name": "author",
+            "name": "body",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -542,22 +534,6 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "isPublished",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -572,7 +548,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UpdateBookInput",
+        "name": "UpdatePostInput",
         "description": null,
         "fields": null,
         "inputFields": [
@@ -589,23 +565,11 @@
             "deprecationReason": null
           },
           {
-            "name": "author",
+            "name": "body",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "isPublished",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,

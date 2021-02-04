@@ -1,9 +1,15 @@
+query Users {
+  users {
+    id
+    name
+  }
+}
+
 mutation Login($data: LoginUserInput!) {
   login(data: $data) {
     user {
       id
       name
-      email
     }
     errors {
       field
@@ -18,7 +24,6 @@ mutation Register($data: RegisterUserInput!) {
     user {
       id
       name
-      email
     }
     errors {
       field

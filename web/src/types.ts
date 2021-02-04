@@ -1,8 +1,7 @@
-export type BookType = {
+export type PostType = {
   id: string
   title: string
-  author: string
-  isPublished: boolean
+  body: string
   user: UserType
 }
 
