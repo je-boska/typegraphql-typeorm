@@ -6,5 +6,6 @@ export type PostType = {
 }
 
 export type UserType = {
+  id: string
   name: string
 }

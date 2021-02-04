@@ -44,6 +44,7 @@ export type User = {
   id: Scalars['String'];
   name: Scalars['String'];
   posts: Array<Post>;
+  follows: Array<User>;
 };
 
 export type Mutation = {
@@ -51,6 +52,7 @@ export type Mutation = {
   createPost: Post;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
+  follow: User;
   register: UserResponse;
   login: UserResponse;
 };
@@ -70,6 +72,12 @@ export type MutationUpdatePostArgs = {
 
 export type MutationDeletePostArgs = {
   id: Scalars['String'];
+};
+
+
+export type MutationFollowArgs = {
+  friendId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 
@@ -126,7 +134,7 @@ export type PostsQuery = (
     & Pick<Post, 'id' | 'title' | 'body'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'name'>
+      & Pick<User, 'id' | 'name'>
     ) }
   )> }
 );
@@ -143,7 +151,7 @@ export type PostQuery = (
     & Pick<Post, 'title' | 'body'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'name'>
+      & Pick<User, 'id' | 'name'>
     ) }
   ) }
 );
@@ -161,7 +169,7 @@ export type CreatePostMutation = (
     & Pick<Post, 'id' | 'title' | 'body'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'name'>
+      & Pick<User, 'id' | 'name'>
     ) }
   ) }
 );
@@ -201,6 +209,23 @@ export type UsersQuery = (
   )> }
 );
 
+export type UserQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type UserQuery = (
+  { __typename?: 'Query' }
+  & { user: (
+    { __typename?: 'User' }
+    & Pick<User, 'name'>
+    & { follows: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'name'>
+    )> }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   data: LoginUserInput;
 }>;
@@ -214,6 +239,10 @@ export type LoginMutation = (
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
+      & { follows: Array<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name'>
+      )> }
     )>, errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -249,6 +278,7 @@ export const PostsDocument = gql`
     title
     body
     user {
+      id
       name
     }
   }
@@ -285,6 +315,7 @@ export const PostDocument = gql`
     title
     body
     user {
+      id
       name
     }
   }
@@ -323,6 +354,7 @@ export const CreatePostDocument = gql`
     title
     body
     user {
+      id
       name
     }
   }
@@ -451,12 +483,52 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const UserDocument = gql`
+    query User($id: String!) {
+  user(id: $id) {
+    name
+    follows {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+      }
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginUserInput!) {
   login(data: $data) {
     user {
       id
       name
+      follows {
+        id
+        name
+      }
     }
     errors {
       field

@@ -31,13 +31,27 @@ class UserResponse {
 export class UserResolver {
   @Query(() => [User])
   async users() {
-    return User.find()
+    return User.find({ relations: ['follows'] })
   }
 
   @Query(() => User)
   async user(@Arg('id') id: string) {
-    const user = await User.findOne({ id }, { relations: ['books'] })
+    const user = await User.findOne({ id }, { relations: ['follows'] })
+    if (!user) throw new Error('No user with this ID')
     return user
+  }
+
+  @Mutation(() => User)
+  async follow(
+    @Arg('userId') userId: string,
+    @Arg('friendId') followId: string
+  ) {
+    const user = await User.findOne({ id: userId }, { relations: ['follows'] })
+    const followUser = await User.findOne({ id: followId })
+    if (!user || !followUser) throw new Error('No user with this ID')
+    user.follows = user.follows.concat(followUser)
+    const savedUser = await user.save()
+    return savedUser
   }
 
   @Mutation(() => UserResponse)
@@ -70,7 +84,10 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(@Arg('data') data: LoginUserInput) {
-    const user = await User.findOne({ email: data.email })
+    const user = await User.findOne(
+      { email: data.email },
+      { relations: ['follows'] }
+    )
     if (!user) {
       return {
         errors: [

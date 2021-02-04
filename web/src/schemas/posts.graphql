@@ -4,6 +4,7 @@ query Posts {
     title
     body
     user {
+      id
       name
     }
   }
@@ -14,6 +15,7 @@ query Post($id: String!) {
     title
     body
     user {
+      id
       name
     }
   }
@@ -25,6 +27,7 @@ mutation CreatePost($data: CreatePostInput!, $userId: String!) {
     title
     body
     user {
+      id
       name
     }
   }

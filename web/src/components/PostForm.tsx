@@ -28,7 +28,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   setBody,
 }) => {
   return (
-    <Box p={4} m={8} maxW='500px' borderRadius={4} borderWidth={1}>
+    <Box p={4} m={8} mb={0} maxW='500px' borderRadius={4} borderWidth={1}>
       <form
         onSubmit={e => {
           e.preventDefault()
@@ -42,11 +42,11 @@ export const PostForm: React.FC<PostFormProps> = ({
         <Input mb={2} onChange={e => setTitle(e.target.value)} value={title} />
         <FormLabel>Body</FormLabel>
         <Textarea mb={2} onChange={e => setBody(e.target.value)} value={body} />
-        <Button p={2} mt={4} mr={2} type='submit'>
+        <Button p={2} mt={2} mr={2} type='submit'>
           Submit
         </Button>
         {heading === 'Update Post' && (
-          <Button p={2} mt={4} type='button' onClick={cancel}>
+          <Button p={2} mt={2} type='button' onClick={cancel}>
             Cancel
           </Button>
         )}

@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm'
 import { Field, ObjectType } from 'type-graphql'
 import { Post } from './Post'
@@ -28,4 +30,9 @@ export class User extends BaseEntity {
   @Field(() => [Post])
   @OneToMany(() => Post, post => post.user)
   posts: Post[]
+
+  @Field(() => [User])
+  @ManyToMany(() => User, user => user.follows)
+  @JoinTable()
+  follows: User[]
 }

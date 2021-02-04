@@ -14,16 +14,22 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { PostType } from '../types'
 
 interface PostProps {
   post: PostType
+  userId: string
   deletePost: (id: string) => void
   selectPost: (post: PostType) => void
 }
 
-export const Post: React.FC<PostProps> = ({ post, deletePost, selectPost }) => {
+export const Post: React.FC<PostProps> = ({
+  post,
+  userId,
+  deletePost,
+  selectPost,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -49,22 +55,24 @@ export const Post: React.FC<PostProps> = ({ post, deletePost, selectPost }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mb={8}>
+      <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mt={8}>
         <Box>
-          <Heading
-            size='md'
-            mb={2}
-            onClick={() => selectPost(post)}
-            cursor='pointer'
-          >
+          <Heading size='md' mb={2}>
             {post.title}
           </Heading>
           <Text>{post.body}</Text>
           <Text>by {post.user.name}</Text>
         </Box>
-        <Button onClick={onOpen} bgColor='transparent'>
-          <DeleteIcon />
-        </Button>
+        {post.user.id === userId ? (
+          <Flex ml='auto' direction='column'>
+            <Button onClick={onOpen} bgColor='transparent'>
+              <DeleteIcon />
+            </Button>
+            <Button onClick={() => selectPost(post)} bgColor='transparent'>
+              <EditIcon />
+            </Button>
+          </Flex>
+        ) : null}
       </Flex>
     </>
   )

@@ -26,7 +26,8 @@ type UserType = {
   id: string
   name: string
   email: string
-} | null
+  follows: [OtherUserType]
+}
 
 type OtherUserType = {
   id: string
@@ -49,7 +50,7 @@ const Home = () => {
   const { colorMode, toggleColorMode } = useColorMode()
   const history = useHistory()
   const [token, setToken] = useState('')
-  const [user, setUser] = useState<UserType>(null)
+  const [user, setUser] = useState<UserType>()
 
   useEffect(() => {
     postsData && setPosts(postsData.posts)
@@ -61,7 +62,7 @@ const Home = () => {
 
   useEffect(() => {
     const localToken = localStorage.getItem('user-token')
-    const user = JSON.parse(localStorage.getItem('user') as string)
+    const user = JSON.parse(localStorage.getItem('user') as string) as UserType
     if (!localToken) {
       history.push('/login')
     } else {
@@ -82,7 +83,6 @@ const Home = () => {
     const { data: postData } = await createPost({
       variables: { data: { title, body }, userId: user.id },
     })
-    console.log(postData)
     if (postData) {
       const newPosts = posts.concat(postData.createPost)
       setPosts(newPosts)
@@ -140,7 +140,7 @@ const Home = () => {
     setUpdateBody(body)
   }
 
-  if (!postsData || !usersData) {
+  if (!postsData || !user) {
     return (
       <Box m={8}>
         <Text>Loading...</Text>
@@ -171,7 +171,7 @@ const Home = () => {
       </Flex>
       <Flex>
         <Box w={250} borderWidth={1} m={8} p={8} borderRadius={4}>
-          {users.map(user => (
+          {user?.follows.map(user => (
             <Text key={user.id} fontSize='1.2rem'>
               {user.name}
             </Text>
@@ -206,6 +206,7 @@ const Home = () => {
               {posts.map(post => (
                 <Post
                   key={post.id}
+                  userId={user.id}
                   post={post}
                   deletePost={deletePostHandler}
                   selectPost={selectPostHandler}

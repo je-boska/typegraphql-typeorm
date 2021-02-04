@@ -5,11 +5,24 @@ query Users {
   }
 }
 
+query User($id: String!) {
+  user(id: $id) {
+    name
+    follows {
+      name
+    }
+  }
+}
+
 mutation Login($data: LoginUserInput!) {
   login(data: $data) {
     user {
       id
       name
+      follows {
+        id
+        name
+      }
     }
     errors {
       field
