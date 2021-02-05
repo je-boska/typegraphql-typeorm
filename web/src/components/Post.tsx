@@ -55,13 +55,13 @@ export const Post: React.FC<PostProps> = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mt={8}>
-        <Box>
+      <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mt={4}>
+        <Box pr={2}>
           <Heading size='md' mb={2}>
             {post.title}
           </Heading>
-          <Text>{post.body}</Text>
-          <Text>by {post.user.name}</Text>
+          <Text mb={2}>{post.user.name}</Text>
+          <Text mb={2}>{post.body}</Text>
         </Box>
         {post.user.id === userId ? (
           <Flex ml='auto' direction='column'>

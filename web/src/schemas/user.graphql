@@ -45,3 +45,7 @@ mutation Register($data: RegisterUserInput!) {
     token
   }
 }
+
+mutation Follow($userId: String!, $followId: String!) {
+  follow(userId: $userId, friendId: $followId)
+}

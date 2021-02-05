@@ -41,7 +41,7 @@ export class UserResolver {
     return user
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Boolean)
   async follow(
     @Arg('userId') userId: string,
     @Arg('friendId') followId: string
@@ -50,8 +50,8 @@ export class UserResolver {
     const followUser = await User.findOne({ id: followId })
     if (!user || !followUser) throw new Error('No user with this ID')
     user.follows = user.follows.concat(followUser)
-    const savedUser = await user.save()
-    return savedUser
+    await user.save()
+    return true
   }
 
   @Mutation(() => UserResponse)

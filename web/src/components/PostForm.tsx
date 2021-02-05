@@ -28,7 +28,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   setBody,
 }) => {
   return (
-    <Box p={4} m={8} mb={0} maxW='500px' borderRadius={4} borderWidth={1}>
+    <Box p={4} mt={4} maxW='500px' borderRadius={4} borderWidth={1}>
       <form
         onSubmit={e => {
           e.preventDefault()

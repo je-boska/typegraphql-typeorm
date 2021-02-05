@@ -5,6 +5,8 @@ import {
   useDeletePostMutation,
   useUpdatePostMutation,
   useUsersQuery,
+  useFollowMutation,
+  useUserQuery,
 } from '../generated/graphql'
 import {
   Flex,
@@ -47,6 +49,7 @@ const Home = () => {
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
   const [deletePost] = useDeletePostMutation()
+  const [follow] = useFollowMutation()
   const { colorMode, toggleColorMode } = useColorMode()
   const history = useHistory()
   const [token, setToken] = useState('')
@@ -73,6 +76,7 @@ const Home = () => {
 
   function logoutHandler() {
     localStorage.removeItem('user-token')
+    localStorage.removeItem('user')
     setToken('')
   }
 
@@ -140,6 +144,16 @@ const Home = () => {
     setUpdateBody(body)
   }
 
+  function followHandler(followUser: OtherUserType) {
+    if (!user) return
+    let followsArray = user.follows
+    if (followsArray.some(u => u['name'] === followUser.name)) return
+    followsArray.push(followUser)
+    const newUser = { ...user, follows: followsArray }
+    setUser(newUser)
+    follow({ variables: { userId: user.id, followId: followUser.id } })
+  }
+
   if (!postsData || !user) {
     return (
       <Box m={8}>
@@ -155,6 +169,7 @@ const Home = () => {
         align='center'
         p={2}
         justify='flex-end'
+        wrap='wrap'
         borderBottomWidth={1}
       >
         <Heading p={2} size='2xl' opacity='0.1' mr='auto'>
@@ -169,13 +184,29 @@ const Home = () => {
         />
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
-      <Flex>
-        <Box w={250} borderWidth={1} m={8} p={8} borderRadius={4}>
-          {user?.follows.map(user => (
-            <Text key={user.id} fontSize='1.2rem'>
-              {user.name}
-            </Text>
+      <Flex maxW='100%' wrap='wrap'>
+        <Box w={250} borderWidth={1} p={8} mr={4} mt={4} borderRadius={4}>
+          <Text mb={2}>Following</Text>
+          {user?.follows.map(u => (
+            <Text key={u.id}>{u.name}</Text>
           ))}
+          <Text mb={2} mt={8}>
+            Other users
+          </Text>
+          {users
+            .filter(u => u.id !== user.id)
+            .map(u => (
+              <Flex key={u.id}>
+                <Text>{u.name}</Text>
+                <Text
+                  ml='auto'
+                  cursor='pointer'
+                  onClick={() => followHandler(u)}
+                >
+                  +
+                </Text>
+              </Flex>
+            ))}
         </Box>
         <Box>
           <Flex justify='center' direction='column'>
@@ -202,7 +233,7 @@ const Home = () => {
                 />
               )}
             </Box>
-            <Box m={8}>
+            <Box>
               {posts.map(post => (
                 <Post
                   key={post.id}
