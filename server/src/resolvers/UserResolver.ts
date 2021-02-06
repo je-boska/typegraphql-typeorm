@@ -1,10 +1,23 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql'
+import {
+  Arg,
+  Ctx,
+  Field,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from 'type-graphql'
 import { RegisterUserInput } from '../inputs/RegisterUserInput'
 import { User } from '../models/User'
 import argon2 from 'argon2'
 import { LoginUserInput } from '../inputs/LoginUserInput'
-import generateToken from '../utils/generateToken'
-import { getRepository } from 'typeorm'
+import { generateToken } from '../utils/generateToken'
+import { Request } from 'express'
+import { verifyToken } from '../utils/verifyToken'
+
+type ContextType = {
+  req: Request
+}
 
 @ObjectType()
 class FieldError {
@@ -29,6 +42,14 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User)
+  async me(@Ctx() { req }: ContextType) {
+    const token = req.headers.authorization?.split(' ')[1] || ''
+    const id = verifyToken(token)
+    const user = await User.findOne({ id }, { relations: ['follows'] })
+    return user
+  }
+
   @Query(() => [User])
   async users() {
     return User.find({ relations: ['follows'] })
@@ -112,5 +133,10 @@ export class UserResolver {
 
     const token = generateToken(user.id)
     return { user, token }
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: any) {
+    return false
   }
 }

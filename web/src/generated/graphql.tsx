@@ -17,6 +17,7 @@ export type Query = {
   __typename?: 'Query';
   posts: Array<Post>;
   post: Post;
+  me: User;
   users: Array<User>;
   user: User;
 };
@@ -55,6 +56,7 @@ export type Mutation = {
   follow: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
+  logout: Scalars['Boolean'];
 };
 
 
@@ -184,7 +186,7 @@ export type UpdatePostMutation = (
   { __typename?: 'Mutation' }
   & { updatePost: (
     { __typename?: 'Post' }
-    & Pick<Post, 'title' | 'body'>
+    & Pick<Post, 'id' | 'title' | 'body'>
   ) }
 );
 
@@ -196,6 +198,21 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deletePost'>
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name'>
+    & { follows: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name'>
+    )> }
+  ) }
 );
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
@@ -400,6 +417,7 @@ export type CreatePostMutationOptions = Apollo.BaseMutationOptions<CreatePostMut
 export const UpdatePostDocument = gql`
     mutation UpdatePost($id: String!, $data: UpdatePostInput!) {
   updatePost(id: $id, data: $data) {
+    id
     title
     body
   }
@@ -461,6 +479,43 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    name
+    follows {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const UsersDocument = gql`
     query Users {
   users {

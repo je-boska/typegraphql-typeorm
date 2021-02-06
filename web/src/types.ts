@@ -2,10 +2,28 @@ export type PostType = {
   id: string
   title: string
   body: string
-  user: UserType
+  user: {
+    id: string
+    name: string
+  }
 }
 
 export type UserType = {
   id: string
   name: string
+  email: string
+  follows: [OtherUserType]
+}
+
+export type OtherUserType = {
+  id: string
+  name: string
+}
+
+export type UserStateType = {
+  loading: boolean
+  id: string
+  name: string
+  follows: [OtherUserType]
+  token: string
 }

@@ -35,6 +35,7 @@ mutation CreatePost($data: CreatePostInput!, $userId: String!) {
 
 mutation UpdatePost($id: String!, $data: UpdatePostInput!) {
   updatePost(id: $id, data: $data) {
+    id
     title
     body
   }

@@ -10,35 +10,36 @@ import {
   Link as ChakraLink,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { useLoginMutation } from '../generated/graphql'
 import { useHistory } from 'react-router-dom'
+import { useLoginMutation } from '../generated/graphql'
 
 const Login: React.FC<{}> = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [login] = useLoginMutation()
+
   const history = useHistory()
-  const [token, setToken] = useState('')
 
   useEffect(() => {
-    const localToken = localStorage.getItem('user-token')
-    if (token || localToken) {
+    const token = localStorage.getItem('user-token')
+    if (token) {
       history.push('/')
     }
-  }, [token, history])
+  })
 
   async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
+    console.log(error)
     e.preventDefault()
     const { data } = await login({ variables: { data: { email, password } } })
-    if (data?.login.errors) {
+    if (!data) return
+    if (data.login.errors) {
       setError(data.login.errors[0].message)
+      return
     }
-    if (data?.login.token) {
-      setError('')
+    if (data.login.token && data.login.user) {
       localStorage.setItem('user-token', data.login.token)
-      localStorage.setItem('user', JSON.stringify(data.login.user))
-      setToken(data.login.token)
+      setError('')
     }
   }
 

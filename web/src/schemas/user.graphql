@@ -1,3 +1,14 @@
+query Me {
+  me {
+    id
+    name
+    follows {
+      id
+      name
+    }
+  }
+}
+
 query Users {
   users {
     id

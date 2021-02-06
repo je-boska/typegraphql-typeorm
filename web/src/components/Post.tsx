@@ -63,7 +63,7 @@ export const Post: React.FC<PostProps> = ({
           <Text mb={2}>{post.user.name}</Text>
           <Text mb={2}>{post.body}</Text>
         </Box>
-        {post.user.id === userId ? (
+        {post.user.id === userId && (
           <Flex ml='auto' direction='column'>
             <Button onClick={onOpen} bgColor='transparent'>
               <DeleteIcon />
@@ -72,7 +72,7 @@ export const Post: React.FC<PostProps> = ({
               <EditIcon />
             </Button>
           </Flex>
-        ) : null}
+        )}
       </Flex>
     </>
   )
