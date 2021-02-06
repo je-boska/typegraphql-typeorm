@@ -29,7 +29,6 @@ const Login: React.FC<{}> = () => {
   })
 
   async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
-    console.log(error)
     e.preventDefault()
     const { data } = await login({ variables: { data: { email, password } } })
     if (!data) return

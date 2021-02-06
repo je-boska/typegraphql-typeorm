@@ -23,8 +23,9 @@ import { PostType } from '../types'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { UsersList } from '../components/UsersList'
+import { useApolloClient } from '@apollo/client'
 
-const Home = () => {
+const Home: React.FC = () => {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [updateId, setUpdateId] = useState('')
@@ -40,6 +41,7 @@ const Home = () => {
   const [deletePost] = useDeletePostMutation()
 
   const history = useHistory()
+  const client = useApolloClient()
 
   useEffect(() => {
     const localToken = localStorage.getItem('user-token')
@@ -48,6 +50,7 @@ const Home = () => {
   }, [token, history])
 
   function logoutHandler() {
+    client.cache.reset()
     localStorage.removeItem('user-token')
     setToken('')
   }
