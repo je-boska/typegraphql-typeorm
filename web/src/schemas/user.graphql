@@ -60,3 +60,7 @@ mutation Register($data: RegisterUserInput!) {
 mutation Follow($userId: String!, $followId: String!) {
   follow(userId: $userId, friendId: $followId)
 }
+
+mutation Unfollow($userId: String!, $followId: String!) {
+  unfollow(userId: $userId, friendId: $followId)
+}

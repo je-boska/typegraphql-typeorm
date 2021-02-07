@@ -57,10 +57,10 @@ export const Post: React.FC<PostProps> = ({
       </Modal>
       <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mt={4}>
         <Box pr={2}>
+          <Text mb={2}>{post.user.name}</Text>
           <Heading size='md' mb={2}>
             {post.title}
           </Heading>
-          <Text mb={2}>{post.user.name}</Text>
           <Text mb={2}>{post.body}</Text>
         </Box>
         {post.user.id === userId && (

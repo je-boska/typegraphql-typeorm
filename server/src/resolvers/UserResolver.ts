@@ -75,6 +75,19 @@ export class UserResolver {
     return true
   }
 
+  @Mutation(() => Boolean)
+  async unfollow(
+    @Arg('userId') userId: string,
+    @Arg('friendId') followId: string
+  ) {
+    const user = await User.findOne({ id: userId }, { relations: ['follows'] })
+    const followUser = await User.findOne({ id: followId })
+    if (!user || !followUser) throw new Error('No user with this ID')
+    user.follows = user.follows.filter(u => u.id !== followUser.id)
+    await user.save()
+    return true
+  }
+
   @Mutation(() => UserResponse)
   async register(@Arg('data') data: RegisterUserInput) {
     const hashedPassword = await argon2.hash(data.password)
