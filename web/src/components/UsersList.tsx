@@ -6,28 +6,27 @@ import {
   useUnfollowMutation,
   useUsersQuery,
 } from '../generated/graphql'
-import { OtherUserType } from '../types'
+import { UserType } from '../types'
 
 interface UsersListProps {
-  follows: OtherUserType[]
-  userId: string
+  user: UserType
 }
 
-export const UsersList: React.FC<UsersListProps> = ({ follows, userId }) => {
+export const UsersList: React.FC<UsersListProps> = ({ user }) => {
   const { data: users } = useUsersQuery()
   const [follow] = useFollowMutation()
   const [unfollow] = useUnfollowMutation()
 
   async function followHandler(followId: string) {
     await follow({
-      variables: { userId, followId },
+      variables: { userId: user.id, followId },
       refetchQueries: [{ query: MeDocument }],
     })
   }
 
   async function unfollowHandler(followId: string) {
     await unfollow({
-      variables: { userId, followId },
+      variables: { userId: user.id, followId },
       refetchQueries: [{ query: MeDocument }],
     })
   }
@@ -35,9 +34,9 @@ export const UsersList: React.FC<UsersListProps> = ({ follows, userId }) => {
   return (
     <Box w={250} borderWidth={1} p={8} mr={4} mt={4} borderRadius={4}>
       <Text mb={2}>Following</Text>
-      {follows &&
-        follows.map(u => (
-          <Flex>
+      {user.follows &&
+        user.follows.map(u => (
+          <Flex key={u.id}>
             <Text key={u.id}>{u.name}</Text>
             <Text
               ml='auto'
@@ -52,7 +51,8 @@ export const UsersList: React.FC<UsersListProps> = ({ follows, userId }) => {
         Other users
       </Text>
       {users?.users
-        .filter(u => u.id !== userId)
+        .filter(u => u.id !== user.id)
+        .filter(u => (user.follows.some(f => f['id'] === u.id) ? null : u))
         .map(u => (
           <Flex key={u.id}>
             <Text>{u.name}</Text>

@@ -44,6 +44,7 @@ export type User = {
   __typename?: 'User';
   id: Scalars['String'];
   name: Scalars['String'];
+  email: Scalars['String'];
   posts: Array<Post>;
   follows: Array<User>;
 };
@@ -214,7 +215,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name'>
+    & Pick<User, 'id' | 'name' | 'email'>
     & { follows: Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
@@ -502,6 +503,7 @@ export const MeDocument = gql`
   me {
     id
     name
+    email
     follows {
       id
       name

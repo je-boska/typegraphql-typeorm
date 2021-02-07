@@ -134,7 +134,7 @@ const Home: React.FC = () => {
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
       <Flex maxW='100%' wrap='wrap'>
-        <UsersList follows={userData.me.follows} userId={userData.me.id} />
+        <UsersList user={userData.me} />
         <Box>
           <Flex justify='center' direction='column'>
             <Box>

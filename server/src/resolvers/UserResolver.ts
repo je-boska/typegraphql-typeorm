@@ -6,18 +6,16 @@ import {
   ObjectType,
   Query,
   Resolver,
+  UseMiddleware,
 } from 'type-graphql'
 import { RegisterUserInput } from '../inputs/RegisterUserInput'
 import { User } from '../models/User'
 import argon2 from 'argon2'
 import { LoginUserInput } from '../inputs/LoginUserInput'
 import { generateToken } from '../utils/generateToken'
-import { Request } from 'express'
 import { verifyToken } from '../utils/verifyToken'
-
-type ContextType = {
-  req: Request
-}
+import { ContextType } from '../types'
+import { isAuth } from '../middleware/isAuth'
 
 @ObjectType()
 class FieldError {
@@ -51,11 +49,13 @@ export class UserResolver {
   }
 
   @Query(() => [User])
+  @UseMiddleware(isAuth)
   async users() {
     return User.find({ relations: ['follows'] })
   }
 
   @Query(() => User)
+  @UseMiddleware(isAuth)
   async user(@Arg('id') id: string) {
     const user = await User.findOne({ id }, { relations: ['follows'] })
     if (!user) throw new Error('No user with this ID')
@@ -63,6 +63,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async follow(
     @Arg('userId') userId: string,
     @Arg('friendId') followId: string
@@ -76,6 +77,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async unfollow(
     @Arg('userId') userId: string,
     @Arg('friendId') followId: string

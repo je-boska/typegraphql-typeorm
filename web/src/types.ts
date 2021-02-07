@@ -12,18 +12,10 @@ export type UserType = {
   id: string
   name: string
   email: string
-  follows: [OtherUserType]
+  follows: OtherUserType[]
 }
 
 export type OtherUserType = {
   id: string
   name: string
-}
-
-export type UserStateType = {
-  loading: boolean
-  id: string
-  name: string
-  follows: [OtherUserType]
-  token: string
 }

@@ -1,7 +1,8 @@
-import { Resolver, Query, Mutation, Arg } from 'type-graphql'
+import { Resolver, Query, Mutation, Arg, UseMiddleware } from 'type-graphql'
 import { getRepository } from 'typeorm'
 import { CreatePostInput } from '../inputs/CreatePostInput'
 import { UpdatePostInput } from '../inputs/UpdatePostInput'
+import { isAuth } from '../middleware/isAuth'
 import { Post } from '../models/Post'
 import { User } from '../models/User'
 
@@ -22,6 +23,7 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
+  @UseMiddleware(isAuth)
   async createPost(
     @Arg('data') data: CreatePostInput,
     @Arg('userId') userId: string
@@ -35,6 +37,7 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
+  @UseMiddleware(isAuth)
   async updatePost(@Arg('id') id: string, @Arg('data') data: UpdatePostInput) {
     const post = await Post.findOne({ where: { id } })
     if (!post) throw new Error('Post not found')
@@ -44,6 +47,7 @@ export class PostResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async deletePost(@Arg('id') id: string) {
     const post = await Post.findOne({ where: { id } })
     if (!post) throw new Error('Post not found')
