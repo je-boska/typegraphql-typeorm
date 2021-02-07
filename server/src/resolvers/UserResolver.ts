@@ -44,14 +44,25 @@ export class UserResolver {
   async me(@Ctx() { req }: ContextType) {
     const token = req.headers.authorization?.split(' ')[1] || ''
     const id = verifyToken(token)
-    const user = await User.findOne({ id }, { relations: ['follows'] })
+    const user = await User.findOne(
+      { id },
+      {
+        relations: [
+          'posts',
+          'posts.user',
+          'follows',
+          'follows.posts',
+          'follows.posts.user',
+        ],
+      }
+    )
     return user
   }
 
   @Query(() => [User])
   @UseMiddleware(isAuth)
   async users() {
-    return User.find({ relations: ['follows'] })
+    return User.find({ relations: ['follows', 'posts'] })
   }
 
   @Query(() => User)

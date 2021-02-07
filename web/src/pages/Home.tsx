@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import {
-  usePostsQuery,
   useDeletePostMutation,
   useUpdatePostMutation,
   useMeQuery,
   useCreatePostMutation,
-  PostsDocument,
+  MeDocument,
 } from '../generated/graphql'
 import {
   Flex,
@@ -34,7 +33,6 @@ const Home: React.FC = () => {
   const [token, setToken] = useState('')
   const { colorMode, toggleColorMode } = useColorMode()
 
-  const { data: posts, loading: loadingPosts } = usePostsQuery()
   const { data: userData } = useMeQuery()
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
@@ -59,7 +57,7 @@ const Home: React.FC = () => {
     if (!userData) return
     await createPost({
       variables: { data: { title, body }, userId: userData.me.id },
-      refetchQueries: [{ query: PostsDocument }],
+      refetchQueries: [{ query: MeDocument }],
     })
     resetAddForm()
   }
@@ -91,7 +89,7 @@ const Home: React.FC = () => {
   function deletePostHandler(id: string) {
     deletePost({
       variables: { id },
-      refetchQueries: [{ query: PostsDocument }],
+      refetchQueries: [{ query: MeDocument }],
     })
     resetUpdateForm()
   }
@@ -103,7 +101,7 @@ const Home: React.FC = () => {
     setUpdateBody(body)
   }
 
-  if (loadingPosts || !userData) {
+  if (!userData) {
     return (
       <Box m={8}>
         <Text>Loading...</Text>
@@ -161,15 +159,19 @@ const Home: React.FC = () => {
               )}
             </Box>
             <Box>
-              {posts?.posts.map(post => (
-                <Post
-                  key={post.id}
-                  userId={userData.me.id}
-                  post={post}
-                  deletePost={deletePostHandler}
-                  selectPost={selectPostHandler}
-                />
-              ))}
+              {userData.me.follows
+                .flatMap(u => u.posts)
+                .concat(userData.me.posts)
+                .sort((a, b) => Number(a.id) - Number(b.id))
+                .map(p => (
+                  <Post
+                    key={p.id}
+                    userId={userData.me.id}
+                    post={p}
+                    deletePost={deletePostHandler}
+                    selectPost={selectPostHandler}
+                  />
+                ))}
             </Box>
           </Flex>
         </Box>

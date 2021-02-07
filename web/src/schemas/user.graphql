@@ -3,9 +3,27 @@ query Me {
     id
     name
     email
+    posts {
+      id
+      title
+      body
+      user {
+        id
+        name
+      }
+    }
     follows {
       id
       name
+      posts {
+        id
+        title
+        body
+        user {
+          id
+          name
+        }
+      }
     }
   }
 }

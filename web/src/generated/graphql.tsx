@@ -216,9 +216,24 @@ export type MeQuery = (
   & { me: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name' | 'email'>
-    & { follows: Array<(
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'title' | 'body'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name'>
+      ) }
+    )>, follows: Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
+      & { posts: Array<(
+        { __typename?: 'Post' }
+        & Pick<Post, 'id' | 'title' | 'body'>
+        & { user: (
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'name'>
+        ) }
+      )> }
     )> }
   ) }
 );
@@ -504,9 +519,27 @@ export const MeDocument = gql`
     id
     name
     email
+    posts {
+      id
+      title
+      body
+      user {
+        id
+        name
+      }
+    }
     follows {
       id
       name
+      posts {
+        id
+        title
+        body
+        user {
+          id
+          name
+        }
+      }
     }
   }
 }
