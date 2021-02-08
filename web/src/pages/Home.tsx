@@ -4,7 +4,8 @@ import {
   useUpdatePostMutation,
   useMeQuery,
   useCreatePostMutation,
-  MeDocument,
+  usePostsQuery,
+  PostsDocument,
 } from '../generated/graphql'
 import {
   Flex,
@@ -34,6 +35,7 @@ const Home: React.FC = () => {
   const { colorMode, toggleColorMode } = useColorMode()
 
   const { data: userData } = useMeQuery()
+  const { data: postData } = usePostsQuery()
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
   const [deletePost] = useDeletePostMutation()
@@ -57,7 +59,7 @@ const Home: React.FC = () => {
     if (!userData) return
     await createPost({
       variables: { data: { title, body }, userId: userData.me.id },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [{ query: PostsDocument }],
     })
     resetAddForm()
   }
@@ -89,7 +91,7 @@ const Home: React.FC = () => {
   function deletePostHandler(id: string) {
     deletePost({
       variables: { id },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [{ query: PostsDocument }],
     })
     resetUpdateForm()
   }
@@ -159,19 +161,15 @@ const Home: React.FC = () => {
               )}
             </Box>
             <Box>
-              {userData.me.follows
-                .flatMap(u => u.posts)
-                .concat(userData.me.posts)
-                .sort((a, b) => Number(a.id) - Number(b.id))
-                .map(p => (
-                  <Post
-                    key={p.id}
-                    userId={userData.me.id}
-                    post={p}
-                    deletePost={deletePostHandler}
-                    selectPost={selectPostHandler}
-                  />
-                ))}
+              {postData?.posts.map(p => (
+                <Post
+                  key={p.id}
+                  userId={userData.me.id}
+                  post={p}
+                  deletePost={deletePostHandler}
+                  selectPost={selectPostHandler}
+                />
+              ))}
             </Box>
           </Flex>
         </Box>

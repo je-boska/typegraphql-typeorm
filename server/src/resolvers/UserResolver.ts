@@ -16,6 +16,7 @@ import { generateToken } from '../utils/generateToken'
 import { verifyToken } from '../utils/verifyToken'
 import { ContextType } from '../types'
 import { isAuth } from '../middleware/isAuth'
+import { createQueryBuilder, getConnection, getRepository } from 'typeorm'
 
 @ObjectType()
 class FieldError {

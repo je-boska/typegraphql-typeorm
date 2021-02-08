@@ -1,17 +1,40 @@
-import { Resolver, Query, Mutation, Arg, UseMiddleware } from 'type-graphql'
-import { getRepository } from 'typeorm'
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Arg,
+  UseMiddleware,
+  Ctx,
+} from 'type-graphql'
+import { getConnection, getRepository } from 'typeorm'
 import { CreatePostInput } from '../inputs/CreatePostInput'
 import { UpdatePostInput } from '../inputs/UpdatePostInput'
 import { isAuth } from '../middleware/isAuth'
 import { Post } from '../models/Post'
 import { User } from '../models/User'
+import { ContextType } from '../types'
+import { verifyToken } from '../utils/verifyToken'
 
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
-  posts() {
-    const postRepo = getRepository(Post)
-    const posts = postRepo.find({ relations: ['user'] })
+  async posts(@Ctx() { req }: ContextType) {
+    const token = req.headers.authorization?.split(' ')[1] || ''
+    const id = verifyToken(token)
+    const posts = await getConnection().query(
+      `
+    SELECT p.*, u.name 
+    FROM post p
+    JOIN "user" AS u ON "userId" = u.id
+    WHERE "userId" IN (
+      SELECT "userId_2" 
+      FROM user_follows_user 
+      WHERE "userId_1" = $1)
+    OR "userId" = $1
+    LIMIT 10;
+      `,
+      [id]
+    )
     return posts
   }
 

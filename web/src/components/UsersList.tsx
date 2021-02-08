@@ -2,6 +2,7 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 import React from 'react'
 import {
   MeDocument,
+  PostsDocument,
   useFollowMutation,
   useUnfollowMutation,
   useUsersQuery,
@@ -20,14 +21,14 @@ export const UsersList: React.FC<UsersListProps> = ({ user }) => {
   async function followHandler(followId: string) {
     await follow({
       variables: { userId: user.id, followId },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [{ query: PostsDocument }, { query: MeDocument }],
     })
   }
 
   async function unfollowHandler(followId: string) {
     await unfollow({
       variables: { userId: user.id, followId },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [{ query: PostsDocument }, { query: MeDocument }],
     })
   }
 
@@ -37,7 +38,7 @@ export const UsersList: React.FC<UsersListProps> = ({ user }) => {
       {user.follows &&
         user.follows.map(u => (
           <Flex key={u.id}>
-            <Text key={u.id}>{u.name}</Text>
+            <Text color='blue.500'>{u.name}</Text>
             <Text
               ml='auto'
               cursor='pointer'
@@ -55,7 +56,7 @@ export const UsersList: React.FC<UsersListProps> = ({ user }) => {
         .filter(u => (user.follows.some(f => f['id'] === u.id) ? null : u))
         .map(u => (
           <Flex key={u.id}>
-            <Text>{u.name}</Text>
+            <Text color='blue.500'>{u.name}</Text>
             <Text
               ml='auto'
               cursor='pointer'

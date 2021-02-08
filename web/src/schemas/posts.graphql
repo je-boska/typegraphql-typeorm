@@ -3,10 +3,8 @@ query Posts {
     id
     title
     body
-    user {
-      id
-      name
-    }
+    name
+    userId
   }
 }
 

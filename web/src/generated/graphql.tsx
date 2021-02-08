@@ -38,6 +38,8 @@ export type Post = {
   title: Scalars['String'];
   body: Scalars['String'];
   user: User;
+  name: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type User = {
@@ -141,11 +143,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'body'>
-    & { user: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'name'>
-    ) }
+    & Pick<Post, 'id' | 'title' | 'body' | 'name' | 'userId'>
   )> }
 );
 
@@ -339,10 +337,8 @@ export const PostsDocument = gql`
     id
     title
     body
-    user {
-      id
-      name
-    }
+    name
+    userId
   }
 }
     `;

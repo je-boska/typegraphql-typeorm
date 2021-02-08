@@ -2,10 +2,8 @@ export type PostType = {
   id: string
   title: string
   body: string
-  user: {
-    id: string
-    name: string
-  }
+  name: string
+  userId: string
 }
 
 export type UserType = {
