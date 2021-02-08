@@ -2,6 +2,8 @@ export type PostType = {
   id: string
   title: string
   body: string
+  createdAt: string
+  updatedAt: string
   name: string
   userId: string
 }

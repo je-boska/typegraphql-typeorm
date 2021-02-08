@@ -3,6 +3,8 @@ query Posts {
     id
     title
     body
+    createdAt
+    updatedAt
     name
     userId
   }

@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm'
 import { ObjectType, Field } from 'type-graphql'
 import { User } from './User'
@@ -32,4 +34,12 @@ export class Post extends BaseEntity {
 
   @Field()
   userId: string
+
+  @Field()
+  @CreateDateColumn()
+  createdAt!: Date
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt!: Date
 }

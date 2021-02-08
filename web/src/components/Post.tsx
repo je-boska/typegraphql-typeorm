@@ -57,9 +57,16 @@ export const Post: React.FC<PostProps> = ({
       </Modal>
       <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mt={4}>
         <Box pr={2}>
-          <Text mb={2} color='blue.500'>
-            {post.name}
-          </Text>
+          <Box mb={2}>
+            <Text as='span' color='blue.500'>
+              {post.name}{' '}
+            </Text>
+            <Text as='span' mb={2} opacity='0.4'>
+              {new Date(post.createdAt).toLocaleDateString()}{' '}
+              {new Date(post.createdAt).toLocaleTimeString()}
+            </Text>
+          </Box>
+
           <Heading size='md' mb={2}>
             {post.title}
           </Heading>

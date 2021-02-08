@@ -31,6 +31,7 @@ export class PostResolver {
       FROM user_follows_user 
       WHERE "userId_1" = $1)
     OR "userId" = $1
+    ORDER BY "createdAt" DESC
     LIMIT 10;
       `,
       [id]
