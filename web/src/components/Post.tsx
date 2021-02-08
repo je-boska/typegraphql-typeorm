@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { PostType } from '../types'
+import moment from 'moment'
 
 interface PostProps {
   post: PostType
@@ -62,8 +63,7 @@ export const Post: React.FC<PostProps> = ({
               {post.name}{' '}
             </Text>
             <Text as='span' mb={2} opacity='0.4'>
-              {new Date(post.createdAt).toLocaleDateString()}{' '}
-              {new Date(post.createdAt).toLocaleTimeString()}
+              {moment(post.createdAt).fromNow()}
             </Text>
           </Box>
 
