@@ -5,6 +5,7 @@ import {
   Arg,
   UseMiddleware,
   Ctx,
+  Int,
 } from 'type-graphql'
 import { getConnection, getRepository } from 'typeorm'
 import { CreatePostInput } from '../inputs/CreatePostInput'
@@ -18,9 +19,19 @@ import { verifyToken } from '../utils/verifyToken'
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
-  async posts(@Ctx() { req }: ContextType) {
+  async posts(
+    @Ctx() { req }: ContextType,
+    @Arg('offset', () => Int, { nullable: true }) offset: number | null
+  ) {
     const token = req.headers.authorization?.split(' ')[1] || ''
     const id = verifyToken(token)
+
+    const sqlArgs: any[] = [id]
+
+    if (offset) {
+      sqlArgs.push(offset)
+    }
+
     const posts = await getConnection().query(
       `
     SELECT p.*, u.name 
@@ -32,9 +43,10 @@ export class PostResolver {
       WHERE "userId_1" = $1)
     OR "userId" = $1
     ORDER BY "createdAt" DESC
-    LIMIT 10;
+    ${offset ? 'OFFSET $2 ROWS' : ''}
+    LIMIT 5;
       `,
-      [id]
+      sqlArgs
     )
     return posts
   }

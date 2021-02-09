@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type Query = {
@@ -20,6 +22,11 @@ export type Query = {
   me: User;
   users: Array<User>;
   user: User;
+};
+
+
+export type QueryPostsArgs = {
+  offset?: Maybe<Scalars['Int']>;
 };
 
 
@@ -40,8 +47,8 @@ export type Post = {
   user: User;
   name: Scalars['String'];
   userId: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type User = {
@@ -52,6 +59,7 @@ export type User = {
   posts: Array<Post>;
   follows: Array<User>;
 };
+
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -138,7 +146,9 @@ export type LoginUserInput = {
   password: Scalars['String'];
 };
 
-export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type PostsQueryVariables = Exact<{
+  offset?: Maybe<Scalars['Int']>;
+}>;
 
 
 export type PostsQuery = (
@@ -334,8 +344,8 @@ export type UnfollowMutation = (
 
 
 export const PostsDocument = gql`
-    query Posts {
-  posts {
+    query Posts($offset: Int) {
+  posts(offset: $offset) {
     id
     title
     body
@@ -359,6 +369,7 @@ export const PostsDocument = gql`
  * @example
  * const { data, loading, error } = usePostsQuery({
  *   variables: {
+ *      offset: // value for 'offset'
  *   },
  * });
  */

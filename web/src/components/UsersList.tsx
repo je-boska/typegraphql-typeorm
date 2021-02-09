@@ -1,8 +1,9 @@
+import { ApolloQueryResult } from '@apollo/client'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import React from 'react'
 import {
   MeDocument,
-  PostsDocument,
+  PostsQuery,
   useFollowMutation,
   useUnfollowMutation,
   useUsersQuery,
@@ -11,9 +12,10 @@ import { UserType } from '../types'
 
 interface UsersListProps {
   user: UserType
+  refetchPosts: () => Promise<ApolloQueryResult<PostsQuery>>
 }
 
-export const UsersList: React.FC<UsersListProps> = ({ user }) => {
+export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
   const { data: users } = useUsersQuery()
   const [follow] = useFollowMutation()
   const [unfollow] = useUnfollowMutation()
@@ -21,19 +23,29 @@ export const UsersList: React.FC<UsersListProps> = ({ user }) => {
   async function followHandler(followId: string) {
     await follow({
       variables: { userId: user.id, followId },
-      refetchQueries: [{ query: PostsDocument }, { query: MeDocument }],
+      refetchQueries: [{ query: MeDocument }],
     })
+    refetchPosts()
   }
 
   async function unfollowHandler(followId: string) {
     await unfollow({
       variables: { userId: user.id, followId },
-      refetchQueries: [{ query: PostsDocument }, { query: MeDocument }],
+      refetchQueries: [{ query: MeDocument }],
     })
+    refetchPosts()
   }
 
   return (
-    <Box w={250} borderWidth={1} p={8} mr={4} mt={4} borderRadius={4}>
+    <Box
+      w={250}
+      alignSelf='flex-start'
+      borderWidth={1}
+      p={8}
+      mr={4}
+      mt={4}
+      borderRadius={4}
+    >
       <Text mb={2}>Following</Text>
       {user.follows &&
         user.follows.map(u => (

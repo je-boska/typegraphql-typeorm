@@ -26,6 +26,7 @@ import { UsersList } from '../components/UsersList'
 import { useApolloClient } from '@apollo/client'
 
 const Home: React.FC = () => {
+  const [offset, setOffset] = useState(0)
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [updateId, setUpdateId] = useState('')
@@ -35,7 +36,9 @@ const Home: React.FC = () => {
   const { colorMode, toggleColorMode } = useColorMode()
 
   const { data: userData } = useMeQuery()
-  const { data: postData } = usePostsQuery()
+  const { data: postData, refetch } = usePostsQuery({
+    variables: { offset: offset },
+  })
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
   const [deletePost] = useDeletePostMutation()
@@ -134,7 +137,7 @@ const Home: React.FC = () => {
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
       <Flex maxW='100%' wrap='wrap'>
-        <UsersList user={userData.me} />
+        <UsersList user={userData.me} refetchPosts={refetch} />
         <Box>
           <Flex justify='center' direction='column'>
             <Box>
@@ -171,6 +174,19 @@ const Home: React.FC = () => {
                 />
               ))}
             </Box>
+            <Flex mt={4} justify='flex-end'>
+              {offset !== 0 && (
+                <Button
+                  mr={2}
+                  onClick={() => offset >= 5 && setOffset(offset - 5)}
+                >
+                  Prev
+                </Button>
+              )}
+              {postData && postData.posts.length === 5 && (
+                <Button onClick={() => setOffset(offset + 5)}>Next</Button>
+              )}
+            </Flex>
           </Flex>
         </Box>
       </Flex>

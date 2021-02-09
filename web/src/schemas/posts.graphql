@@ -1,5 +1,5 @@
-query Posts {
-  posts {
+query Posts($offset: Int) {
+  posts(offset: $offset) {
     id
     title
     body
