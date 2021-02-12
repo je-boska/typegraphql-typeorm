@@ -1,0 +1,16 @@
+{
+  "name": "typegraphql-typeorm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/je-boska/typegraphql-typeorm.git",
+  "author": "joneirikboska <joneirikboska@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "server": "cd server && yarn start",
+    "web": "cd web && yarn start",
+    "dev": "concurrently \"yarn server\" \"yarn web\""
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  }
+}
