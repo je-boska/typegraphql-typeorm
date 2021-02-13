@@ -132,8 +132,8 @@ const Home: React.FC = () => {
         wrap='wrap'
         borderBottomWidth={1}
       >
-        <Heading p={2} size='2xl' opacity='0.1' mr='auto'>
-          /||
+        <Heading p={2} size='xl' opacity='0.1' mr='auto'>
+          Midnight Request Line
         </Heading>
         <Text mr={2}>{userData.me.name}</Text>
         <IconButton

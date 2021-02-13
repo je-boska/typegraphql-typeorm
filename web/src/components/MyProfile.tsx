@@ -69,7 +69,6 @@ export const MyProfile: React.FC<ProfileProps> = ({
     <Modal isCentered isOpen={profileOpen} onClose={onProfileClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalCloseButton />
         {!isEditing && (
           <ModalBody>
             <Heading mt={4} mb={4}>
@@ -82,7 +81,7 @@ export const MyProfile: React.FC<ProfileProps> = ({
           </ModalBody>
         )}
         {isEditing && (
-          <ModalBody>
+          <ModalBody mt={4} mb={4}>
             <form onSubmit={e => submitHandler(e)}>
               <FormLabel>Name</FormLabel>
               <Input
@@ -109,20 +108,34 @@ export const MyProfile: React.FC<ProfileProps> = ({
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
-              <Button type='submit'>Submit</Button>
+              <Button
+                variant='ghost'
+                float='right'
+                onClick={() => {
+                  setIsEditing(false)
+                }}
+              >
+                Cancel
+              </Button>
+              <Button variant='ghost' type='submit' float='right'>
+                Submit
+              </Button>
             </form>
           </ModalBody>
         )}
-        <ModalFooter>
-          {!isEditing && (
+        {!isEditing && (
+          <ModalFooter>
             <IconButton
               variant='ghost'
               aria-label='Edit profile'
               icon={<EditIcon />}
               onClick={() => setIsEditing(true)}
             />
-          )}
-        </ModalFooter>
+            <Button variant='ghost' onClick={onProfileClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </Modal>
   )
