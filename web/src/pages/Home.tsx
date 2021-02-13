@@ -5,7 +5,6 @@ import {
   useMeQuery,
   useCreatePostMutation,
   usePostsQuery,
-  PostsDocument,
 } from '../generated/graphql'
 import {
   Flex,
@@ -37,8 +36,8 @@ const Home: React.FC = () => {
   const [token, setToken] = useState('')
   const { colorMode, toggleColorMode } = useColorMode()
 
-  const { data: userData, refetch: refetchMe } = useMeQuery()
-  const { data: postData, refetch } = usePostsQuery({
+  const { data: userData } = useMeQuery()
+  const { data: postData, refetch: refetchPosts } = usePostsQuery({
     variables: { offset: offset },
   })
   const [createPost] = useCreatePostMutation()
@@ -70,8 +69,8 @@ const Home: React.FC = () => {
     if (!userData) return
     await createPost({
       variables: { data: { title, body }, userId: userData.me.id },
-      refetchQueries: [{ query: PostsDocument }],
     })
+    refetchPosts()
     resetAddForm()
   }
 
@@ -85,6 +84,7 @@ const Home: React.FC = () => {
         },
       },
     })
+    refetchPosts()
     resetUpdateForm()
   }
 
@@ -99,11 +99,11 @@ const Home: React.FC = () => {
     setUpdateBody('')
   }
 
-  function deletePostHandler(id: string) {
-    deletePost({
+  async function deletePostHandler(id: string) {
+    await deletePost({
       variables: { id },
-      refetchQueries: [{ query: PostsDocument }],
     })
+    refetchPosts()
     resetUpdateForm()
   }
 
@@ -133,16 +133,10 @@ const Home: React.FC = () => {
         borderBottomWidth={1}
       >
         <Heading p={2} size='2xl' opacity='0.1' mr='auto'>
-          /|| Hello, {userData.me.name}
+          /||
         </Heading>
+        <Text mr={2}>{userData.me.name}</Text>
         <IconButton
-          aria-label='Change color mode'
-          onClick={toggleColorMode}
-          bgColor='transparent'
-          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-        />
-        <IconButton
-          mr={2}
           aria-label='View/edit profile'
           bgColor='transparent'
           onClick={onMyProfileOpen}
@@ -152,12 +146,18 @@ const Home: React.FC = () => {
           user={userData.me}
           profileOpen={myProfileOpen}
           onProfileClose={onMyProfileClose}
-          refetchMe={refetchMe}
+        />
+        <IconButton
+          mr={2}
+          aria-label='Change color mode'
+          onClick={toggleColorMode}
+          bgColor='transparent'
+          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         />
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
       <Flex maxW='100%' wrap='wrap'>
-        <UsersList user={userData.me} refetchPosts={refetch} />
+        <UsersList user={userData.me} refetchPosts={refetchPosts} />
         <Box>
           <Flex justify='center' direction='column'>
             <Box>

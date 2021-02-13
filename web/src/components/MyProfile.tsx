@@ -17,21 +17,18 @@ import React, { useEffect, useState } from 'react'
 import { UserType } from '../types'
 import moment from 'moment'
 import { EditIcon } from '@chakra-ui/icons'
-import { MeQuery, useUpdateUserMutation } from '../generated/graphql'
-import { ApolloQueryResult } from '@apollo/client'
+import { useUpdateUserMutation } from '../generated/graphql'
 
 interface ProfileProps {
   user: UserType | null
   profileOpen: boolean
   onProfileClose: () => void
-  refetchMe: () => Promise<ApolloQueryResult<MeQuery>>
 }
 
 export const MyProfile: React.FC<ProfileProps> = ({
   user,
   profileOpen,
   onProfileClose,
-  refetchMe,
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [name, setName] = useState('')
@@ -49,11 +46,11 @@ export const MyProfile: React.FC<ProfileProps> = ({
     }
   }, [user])
 
-  function submitHandler(e: React.FormEvent<HTMLFormElement>) {
+  async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    update({ variables: { data: { name, about, email, password } } })
+    await update({ variables: { data: { name, about, email, password } } })
+    setIsEditing(false)
     onProfileClose()
-    refetchMe()
   }
 
   if (!user) {
