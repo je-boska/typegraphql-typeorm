@@ -6,6 +6,8 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm'
 import { Field, ObjectType } from 'type-graphql'
 import { Post } from './Post'
@@ -27,6 +29,18 @@ export class User extends BaseEntity {
 
   @Column()
   password!: string
+
+  @Field()
+  @Column({ nullable: true })
+  about: string
+
+  @Field()
+  @CreateDateColumn()
+  createdAt!: Date
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt!: Date
 
   @Field(() => [Post])
   @OneToMany(() => Post, post => post.user)

@@ -3,26 +3,26 @@ query Me {
     id
     name
     email
+    about
+    createdAt
     posts {
       id
       title
       body
-      user {
-        id
-        name
-      }
+      createdAt
+      updatedAt
     }
     follows {
       id
       name
+      about
+      createdAt
       posts {
         id
         title
         body
-        user {
-          id
-          name
-        }
+        createdAt
+        updatedAt
       }
     }
   }
@@ -32,6 +32,15 @@ query Users {
   users {
     id
     name
+    about
+    createdAt
+    posts {
+      id
+      title
+      body
+      createdAt
+      updatedAt
+    }
   }
 }
 
@@ -67,12 +76,24 @@ mutation Register($data: RegisterUserInput!) {
     user {
       id
       name
+      about
     }
     errors {
       field
       message
     }
     token
+  }
+}
+
+mutation UpdateUser($data: RegisterUserInput!) {
+  updateUser(data: $data) {
+    id
+    name
+    email
+    about
+    createdAt
+    updatedAt
   }
 }
 

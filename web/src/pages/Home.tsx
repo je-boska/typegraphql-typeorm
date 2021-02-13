@@ -16,6 +16,7 @@ import {
   useColorMode,
   IconButton,
   Button,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { PostForm } from '../components/PostForm'
 import { Post } from '../components/Post'
@@ -24,6 +25,7 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { UsersList } from '../components/UsersList'
 import { useApolloClient } from '@apollo/client'
+import { MyProfile } from '../components/MyProfile'
 
 const Home: React.FC = () => {
   const [offset, setOffset] = useState(0)
@@ -35,7 +37,7 @@ const Home: React.FC = () => {
   const [token, setToken] = useState('')
   const { colorMode, toggleColorMode } = useColorMode()
 
-  const { data: userData } = useMeQuery()
+  const { data: userData, refetch: refetchMe } = useMeQuery()
   const { data: postData, refetch } = usePostsQuery({
     variables: { offset: offset },
   })
@@ -45,6 +47,12 @@ const Home: React.FC = () => {
 
   const history = useHistory()
   const client = useApolloClient()
+
+  const {
+    isOpen: myProfileOpen,
+    onOpen: onMyProfileOpen,
+    onClose: onMyProfileClose,
+  } = useDisclosure()
 
   useEffect(() => {
     const localToken = localStorage.getItem('user-token')
@@ -125,14 +133,26 @@ const Home: React.FC = () => {
         borderBottomWidth={1}
       >
         <Heading p={2} size='2xl' opacity='0.1' mr='auto'>
-          /||
+          /|| Hello, {userData.me.name}
         </Heading>
         <IconButton
-          mr={4}
           aria-label='Change color mode'
           onClick={toggleColorMode}
           bgColor='transparent'
           icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        />
+        <IconButton
+          mr={2}
+          aria-label='View/edit profile'
+          bgColor='transparent'
+          onClick={onMyProfileOpen}
+          icon={<i className='fas fa-user'></i>}
+        />
+        <MyProfile
+          user={userData.me}
+          profileOpen={myProfileOpen}
+          onProfileClose={onMyProfileClose}
+          refetchMe={refetchMe}
         />
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>

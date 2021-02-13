@@ -6,9 +6,13 @@ import {
   ModalCloseButton,
   ModalFooter,
   Button,
+  ModalBody,
+  Text,
+  Heading,
 } from '@chakra-ui/react'
 import React from 'react'
 import { OtherUserType } from '../types'
+import moment from 'moment'
 
 interface ProfileProps {
   user: OtherUserType | null
@@ -43,8 +47,16 @@ export const Profile: React.FC<ProfileProps> = ({
     <Modal isCentered isOpen={profileOpen} onClose={onProfileClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{user.name}</ModalHeader>
         <ModalCloseButton />
+        <ModalBody>
+          <Heading mt={4} mb={4}>
+            {user.name}
+          </Heading>
+          <Text mb={4} opacity='0.4'>
+            joined {moment(user.createdAt).fromNow()}
+          </Text>
+          <Text>{user.about}</Text>
+        </ModalBody>
         <ModalFooter>
           <Button
             onClick={() => {

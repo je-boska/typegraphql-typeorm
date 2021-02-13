@@ -9,5 +9,8 @@ export class RegisterUserInput {
   email: string
 
   @Field()
+  about: string
+
+  @Field()
   password: string
 }

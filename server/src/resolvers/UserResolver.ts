@@ -111,6 +111,7 @@ export class UserResolver {
       user = User.create({
         name: data.name,
         email: data.email,
+        about: data.about,
         password: hashedPassword,
       })
       await user.save()
@@ -160,6 +161,29 @@ export class UserResolver {
 
     const token = generateToken(user.id)
     return { user, token }
+  }
+
+  @Mutation(() => User)
+  @UseMiddleware(isAuth)
+  async updateUser(
+    @Arg('data') data: RegisterUserInput,
+    @Ctx() { req }: ContextType
+  ) {
+    const token = req.headers.authorization?.split(' ')[1] || ''
+    const id = verifyToken(token)
+
+    const { name, email, about } = data
+    const hashedPassword = await argon2.hash(data.password)
+
+    const updatedUser = await getConnection()
+      .createQueryBuilder()
+      .update(User)
+      .set({ name, email, about, password: hashedPassword })
+      .where({ id })
+      .returning('*')
+      .execute()
+
+    return updatedUser.raw[0]
   }
 
   @Mutation(() => Boolean)
