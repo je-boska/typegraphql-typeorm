@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from '@apollo/client'
-import { Box, Flex, Text, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, Input, Text, useDisclosure } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import {
   MeDocument,
@@ -22,6 +22,7 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
   const [unfollow] = useUnfollowMutation()
 
   const [selectedUser, setSelectedUser] = useState<OtherUserType | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
 
   const {
     isOpen: profileOpen,
@@ -43,6 +44,11 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
       refetchQueries: [{ query: MeDocument }],
     })
     refetchPosts()
+  }
+
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault()
+    setSearchTerm(e.target.value)
   }
 
   return (
@@ -87,12 +93,11 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
             </Text>
           </Flex>
         ))}
-      <Text mb={2} mt={8}>
-        Other users
-      </Text>
-      {users?.users
+      <Input mt={4} mb={2} placeholder="Search for users..." value={searchTerm} onChange={handleSearch} />
+      {searchTerm.length > 0 && users?.users
         .filter(u => u.id !== user.id)
         .filter(u => (user.follows.some(f => f['id'] === u.id) ? null : u))
+        .filter(u => (u.name.toLowerCase().includes(searchTerm.toLowerCase()) ? u : null))
         .map(u => (
           <Flex key={u.id}>
             <Text
@@ -112,7 +117,7 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
             >
               +
             </Text>
-          </Flex>
+          </Flex> 
         ))}
     </Box>
   )

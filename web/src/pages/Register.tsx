@@ -68,7 +68,7 @@ const Register: React.FC<{}> = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          <Button type='submit'>Log in</Button>
+          <Button type='submit'>Register</Button>
         </form>
       </Box>
     </Container>
