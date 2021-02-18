@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   useDeletePostMutation,
-  useUpdatePostMutation,
   useMeQuery,
-  useCreatePostMutation,
   usePostsQuery,
 } from '../generated/graphql'
 import {
@@ -28,11 +26,7 @@ import { MyProfile } from '../components/MyProfile'
 
 const Home: React.FC = () => {
   const [offset, setOffset] = useState(0)
-  const [title, setTitle] = useState('')
-  const [body, setBody] = useState('')
-  const [updateId, setUpdateId] = useState('')
-  const [updateTitle, setUpdateTitle] = useState('')
-  const [updateBody, setUpdateBody] = useState('')
+  const [postId, setPostId] = useState('')
   const [token, setToken] = useState('')
   const { colorMode, toggleColorMode } = useColorMode()
 
@@ -40,8 +34,7 @@ const Home: React.FC = () => {
   const { data: postData, refetch: refetchPosts } = usePostsQuery({
     variables: { offset: offset },
   })
-  const [createPost] = useCreatePostMutation()
-  const [updatePost] = useUpdatePostMutation()
+
   const [deletePost] = useDeletePostMutation()
 
   const history = useHistory()
@@ -65,53 +58,16 @@ const Home: React.FC = () => {
     setToken('')
   }
 
-  async function handleSubmit() {
-    if (!userData) return
-    await createPost({
-      variables: { data: { title, body }, userId: userData.me.id },
-    })
-    refetchPosts()
-    resetAddForm()
-  }
-
-  async function handleUpdateSubmit() {
-    await updatePost({
-      variables: {
-        id: updateId,
-        data: {
-          title: updateTitle,
-          body: updateBody,
-        },
-      },
-    })
-    refetchPosts()
-    resetUpdateForm()
-  }
-
-  function resetAddForm() {
-    setTitle('')
-    setBody('')
-  }
-
-  function resetUpdateForm() {
-    setUpdateId('')
-    setUpdateTitle('')
-    setUpdateBody('')
-  }
-
   async function deletePostHandler(id: string) {
     await deletePost({
       variables: { id },
     })
     refetchPosts()
-    resetUpdateForm()
   }
 
   function selectPostHandler(post: PostType) {
-    const { id, title, body } = post
-    setUpdateId(id)
-    setUpdateTitle(title)
-    setUpdateBody(body)
+    const { id } = post
+    setPostId(id)
   }
 
   if (!userData) {
@@ -161,30 +117,27 @@ const Home: React.FC = () => {
         <Box>
           <Flex justify='center' direction='column'>
             <Box>
-              {!updateId && (
+              {!postId && (
                 <PostForm
-                  heading='Add Post'
-                  onSubmit={handleSubmit}
-                  title={title}
-                  setTitle={setTitle}
-                  body={body}
-                  setBody={setBody}
+                  postId={''}
+                  setPostId={setPostId}
+                  heading='Create Post'
+                  userId={userData.me.id}
+                  refetchPosts={refetchPosts}
                 />
               )}
-              {updateId && (
+              {postId && (
                 <PostForm
+                  postId={postId}
+                  setPostId={setPostId}
                   heading='Update Post'
-                  onSubmit={handleUpdateSubmit}
-                  cancel={resetUpdateForm}
-                  title={updateTitle}
-                  setTitle={setUpdateTitle}
-                  body={updateBody}
-                  setBody={setUpdateBody}
+                  userId={userData.me.id}
+                  refetchPosts={refetchPosts}
                 />
               )}
             </Box>
             <Box>
-              {postData?.posts.map(p => (
+              {postData?.posts.map((p) => (
                 <Post
                   key={p.id}
                   userId={userData.me.id}

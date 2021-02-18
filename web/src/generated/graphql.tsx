@@ -69,6 +69,7 @@ export type Mutation = {
   createPost: Post;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
+  uploadPhoto: Scalars['Boolean'];
   follow: Scalars['Boolean'];
   unfollow: Scalars['Boolean'];
   register: UserResponse;
@@ -92,6 +93,11 @@ export type MutationUpdatePostArgs = {
 
 export type MutationDeletePostArgs = {
   id: Scalars['String'];
+};
+
+
+export type MutationUploadPhotoArgs = {
+  photo: Scalars['String'];
 };
 
 
@@ -178,11 +184,7 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post: (
     { __typename?: 'Post' }
-    & Pick<Post, 'title' | 'body'>
-    & { user: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'name'>
-    ) }
+    & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'updatedAt'>
   ) }
 );
 
@@ -226,6 +228,16 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deletePost'>
+);
+
+export type UploadImageMutationVariables = Exact<{
+  photo: Scalars['String'];
+}>;
+
+
+export type UploadImageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadPhoto'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -404,12 +416,11 @@ export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariable
 export const PostDocument = gql`
     query Post($id: String!) {
   post(id: $id) {
+    id
     title
     body
-    user {
-      id
-      name
-    }
+    createdAt
+    updatedAt
   }
 }
     `;
@@ -543,6 +554,36 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const UploadImageDocument = gql`
+    mutation UploadImage($photo: String!) {
+  uploadPhoto(photo: $photo)
+}
+    `;
+export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation, UploadImageMutationVariables>;
+
+/**
+ * __useUploadImageMutation__
+ *
+ * To run a mutation, you first call `useUploadImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadImageMutation, { data, loading, error }] = useUploadImageMutation({
+ *   variables: {
+ *      photo: // value for 'photo'
+ *   },
+ * });
+ */
+export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<UploadImageMutation, UploadImageMutationVariables>) {
+        return Apollo.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument, baseOptions);
+      }
+export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
+export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
+export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

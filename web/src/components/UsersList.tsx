@@ -79,11 +79,13 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
           value={searchTerm}
           onChange={handleSearch}
         />
-        <InputRightElement>
-          <Button size='xs' onClick={() => setSearchTerm('')}>
-            X
-          </Button>
-        </InputRightElement>
+        {searchTerm && (
+          <InputRightElement>
+            <Button size='xs' onClick={() => setSearchTerm('')}>
+              X
+            </Button>
+          </InputRightElement>
+        )}
       </InputGroup>
       {searchTerm.length > 0 &&
         users?.users

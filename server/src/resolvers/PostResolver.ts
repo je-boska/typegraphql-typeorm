@@ -16,6 +16,8 @@ import { User } from '../models/User'
 import { ContextType } from '../types'
 import { verifyToken } from '../utils/verifyToken'
 
+import cloudinary from 'cloudinary'
+
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
@@ -88,6 +90,25 @@ export class PostResolver {
     const post = await Post.findOne({ where: { id } })
     if (!post) throw new Error('Post not found')
     await post.remove()
+    return true
+  }
+
+  @Mutation(() => Boolean)
+  async uploadPhoto(@Arg('photo') photo: string) {
+    cloudinary.v2.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+
+    const result = await cloudinary.v2.uploader.upload(photo, {
+      allowed_formats: ['jpg', 'png'],
+      public_id: '',
+      folder: 'MRL',
+    })
+
+    console.log(result)
+
     return true
   }
 }
