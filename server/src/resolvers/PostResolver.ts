@@ -13,10 +13,11 @@ import { UpdatePostInput } from '../inputs/UpdatePostInput'
 import { isAuth } from '../middleware/isAuth'
 import { Post } from '../models/Post'
 import { User } from '../models/User'
-import { ContextType } from '../types'
+import { ContextType, UploadType } from '../types'
 import { verifyToken } from '../utils/verifyToken'
 
 import cloudinary from 'cloudinary'
+import { GraphQLUpload } from 'apollo-server-express'
 
 @Resolver()
 export class PostResolver {
@@ -94,20 +95,37 @@ export class PostResolver {
   }
 
   @Mutation(() => Boolean)
-  async uploadPhoto(@Arg('photo') photo: string) {
+  async uploadPhoto(
+    @Arg('photo', () => GraphQLUpload!) photo: UploadType
+  ): Promise<Boolean> {
+    console.log(photo)
+
     cloudinary.v2.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
     })
 
-    const result = await cloudinary.v2.uploader.upload(photo, {
-      allowed_formats: ['jpg', 'png'],
-      public_id: '',
-      folder: 'MRL',
-    })
+    const uploadStream = cloudinary.v2.uploader.upload_stream(
+      {
+        allowed_formats: ['jpg', 'png'],
+        public_id: '',
+        folder: 'MRL',
+      },
+      function (error: any, result: any) {
+        if (result) {
+          console.log('result', result)
+        } else {
+          console.log('error', error)
+        }
+      }
+    )
 
-    console.log(result)
+    const { createReadStream } = photo
+
+    const fileStream = createReadStream()
+
+    fileStream.pipe(uploadStream)
 
     return true
   }

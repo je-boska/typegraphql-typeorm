@@ -6,6 +6,7 @@ import {
   Input,
   Button,
   Textarea,
+  Image,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {
@@ -13,6 +14,7 @@ import {
   useCreatePostMutation,
   usePostQuery,
   useUpdatePostMutation,
+  useUploadImageMutation,
 } from '../generated/graphql'
 
 interface PostFormProps {
@@ -32,9 +34,11 @@ export const PostForm: React.FC<PostFormProps> = ({
 }) => {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [image, setImage] = useState('')
 
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
+  const [upload] = useUploadImageMutation()
 
   const { data } = usePostQuery({ variables: { id: postId } })
 
@@ -74,6 +78,16 @@ export const PostForm: React.FC<PostFormProps> = ({
     setBody('')
   }
 
+  async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return
+    let path = window.URL.createObjectURL(e.target.files[0])
+    setImage(path)
+    const bool = await upload({
+      variables: { photo: e.target.files[0] },
+    })
+    console.log('Upload result', bool)
+  }
+
   return (
     <Box p={4} mt={4} maxW='500px' borderRadius={4} borderWidth={1}>
       <form
@@ -101,6 +115,8 @@ export const PostForm: React.FC<PostFormProps> = ({
           onChange={(e) => setBody(e.target.value)}
           value={body}
         />
+        <Input type='file' onChange={(e) => uploadPhoto(e)} />
+        <Image src={image} />
         <Button p={2} mt={2} mr={2} type='submit'>
           Submit
         </Button>

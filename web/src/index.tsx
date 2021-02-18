@@ -2,13 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import { ApolloProvider } from '@apollo/client'
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react'
-// import { Provider } from 'react-redux'
-// import store from './store'
+import { createUploadLink } from 'apollo-upload-client'
 
-const httpLink = createHttpLink({
+const uploadLink = createUploadLink({
   uri: 'http://localhost:4000/graphql',
 })
 
@@ -23,7 +22,7 @@ const authLink = setContext((_, { headers }) => {
 })
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(uploadLink as any),
   cache: new InMemoryCache(),
 })
 
@@ -37,12 +36,10 @@ const theme = extendTheme({ config })
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      {/* <Provider store={store}> */}
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <App />
       </ChakraProvider>
-      {/* </Provider> */}
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')

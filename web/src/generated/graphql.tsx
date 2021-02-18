@@ -13,6 +13,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -97,7 +99,7 @@ export type MutationDeletePostArgs = {
 
 
 export type MutationUploadPhotoArgs = {
-  photo: Scalars['String'];
+  photo: Scalars['Upload'];
 };
 
 
@@ -136,6 +138,7 @@ export type UpdatePostInput = {
   title?: Maybe<Scalars['String']>;
   body?: Maybe<Scalars['String']>;
 };
+
 
 export type UserResponse = {
   __typename?: 'UserResponse';
@@ -231,7 +234,7 @@ export type DeletePostMutation = (
 );
 
 export type UploadImageMutationVariables = Exact<{
-  photo: Scalars['String'];
+  photo: Scalars['Upload'];
 }>;
 
 
@@ -555,7 +558,7 @@ export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutati
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
 export const UploadImageDocument = gql`
-    mutation UploadImage($photo: String!) {
+    mutation UploadImage($photo: Upload!) {
   uploadPhoto(photo: $photo)
 }
     `;

@@ -1,3 +1,3 @@
-mutation UploadImage($photo: String!) {
+mutation UploadImage($photo: Upload!) {
   uploadPhoto(photo: $photo)
 }
