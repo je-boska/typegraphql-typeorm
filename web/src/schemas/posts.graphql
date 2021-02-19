@@ -3,6 +3,7 @@ query Posts($offset: Int) {
     id
     title
     body
+    image
     createdAt
     updatedAt
     name

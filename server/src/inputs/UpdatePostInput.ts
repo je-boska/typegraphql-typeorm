@@ -7,4 +7,7 @@ export class UpdatePostInput {
 
   @Field({ nullable: true })
   body?: string
+
+  @Field({ nullable: true })
+  image?: string
 }

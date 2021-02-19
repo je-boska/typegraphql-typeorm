@@ -7,6 +7,10 @@ import {
   Button,
   Textarea,
   Image,
+  Text,
+  Alert,
+  AlertDescription,
+  AlertIcon,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {
@@ -35,10 +39,11 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [image, setImage] = useState('')
+  const [error, setError] = useState('')
 
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
-  const [upload] = useUploadImageMutation()
+  const [upload, { loading }] = useUploadImageMutation()
 
   const { data } = usePostQuery({ variables: { id: postId } })
 
@@ -51,7 +56,7 @@ export const PostForm: React.FC<PostFormProps> = ({
 
   async function handleSubmit() {
     await createPost({
-      variables: { data: { title, body }, userId },
+      variables: { data: { title, body, image }, userId },
     })
     refetchPosts()
     resetForm()
@@ -80,12 +85,17 @@ export const PostForm: React.FC<PostFormProps> = ({
 
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
-    let path = window.URL.createObjectURL(e.target.files[0])
-    setImage(path)
-    const bool = await upload({
+    const { data } = await upload({
       variables: { photo: e.target.files[0] },
     })
-    console.log('Upload result', bool)
+
+    if (data?.uploadPhoto.imageUrl) {
+      setImage(data?.uploadPhoto.imageUrl)
+      setError('')
+    }
+    if (data?.uploadPhoto.error) {
+      setError(data?.uploadPhoto.error)
+    }
   }
 
   return (
@@ -116,7 +126,14 @@ export const PostForm: React.FC<PostFormProps> = ({
           value={body}
         />
         <Input type='file' onChange={(e) => uploadPhoto(e)} />
-        <Image src={image} />
+        {loading && <Text>Loading...</Text>}
+        {error && (
+          <Alert mb={4} mt={4}>
+            <AlertIcon />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <Image src={image} mt={4} />
         <Button p={2} mt={2} mr={2} type='submit'>
           Submit
         </Button>

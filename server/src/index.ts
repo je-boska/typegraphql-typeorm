@@ -3,6 +3,7 @@ import 'dotenv-safe/config'
 import { createConnection } from 'typeorm'
 import express from 'express'
 import cors from 'cors'
+import cloudinary from 'cloudinary'
 import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
 import { PostResolver } from './resolvers/PostResolver'
@@ -15,6 +16,12 @@ async function main() {
     entities: ['./src/models/*.ts'],
     synchronize: true,
     // logging: true,
+  })
+
+  cloudinary.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
   })
 
   const app = express()

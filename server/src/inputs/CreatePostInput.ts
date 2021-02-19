@@ -7,4 +7,7 @@ export class CreatePostInput {
 
   @Field()
   body: string
+
+  @Field()
+  image: string
 }

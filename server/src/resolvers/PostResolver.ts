@@ -6,6 +6,8 @@ import {
   UseMiddleware,
   Ctx,
   Int,
+  Field,
+  ObjectType,
 } from 'type-graphql'
 import { getConnection, getRepository } from 'typeorm'
 import { CreatePostInput } from '../inputs/CreatePostInput'
@@ -18,6 +20,15 @@ import { verifyToken } from '../utils/verifyToken'
 
 import cloudinary from 'cloudinary'
 import { GraphQLUpload } from 'apollo-server-express'
+
+@ObjectType()
+class UploadResponse {
+  @Field(() => String, { nullable: true })
+  imageUrl?: string
+
+  @Field(() => String, { nullable: true })
+  error?: string
+}
 
 @Resolver()
 export class PostResolver {
@@ -94,39 +105,44 @@ export class PostResolver {
     return true
   }
 
-  @Mutation(() => Boolean)
-  async uploadPhoto(
-    @Arg('photo', () => GraphQLUpload!) photo: UploadType
-  ): Promise<Boolean> {
-    console.log(photo)
+  @Mutation(() => UploadResponse)
+  async uploadPhoto(@Arg('photo', () => GraphQLUpload!) photo: UploadType) {
+    const uploadToCloudinary = () => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.v2.uploader.upload_stream(
+          {
+            allowed_formats: ['jpg', 'png'],
+            public_id: '',
+            folder: 'MRL',
+          },
+          (error: any, result: any) => {
+            if (result) {
+              console.log('Image uploaded,', result.secure_url)
+              resolve(result)
+            } else {
+              reject(error)
+            }
+          }
+        )
+        const stream = photo.createReadStream()
+        stream.pipe(uploadStream)
+      })
+    }
 
-    cloudinary.v2.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    })
+    return uploadToCloudinary()
+      .then((result: any) => {
+        return { imageUrl: result.secure_url }
+      })
+      .catch((err) => {
+        console.log('error message:', err.message)
+        return { error: err.message }
+      })
 
-    const uploadStream = cloudinary.v2.uploader.upload_stream(
-      {
-        allowed_formats: ['jpg', 'png'],
-        public_id: '',
-        folder: 'MRL',
-      },
-      function (error: any, result: any) {
-        if (result) {
-          console.log('result', result)
-        } else {
-          console.log('error', error)
-        }
-      }
-    )
+    // if (!result.secure_url && result.message) {
+    //   console.log(result.message)
+    //   return { error: result.message }
+    // }
 
-    const { createReadStream } = photo
-
-    const fileStream = createReadStream()
-
-    fileStream.pipe(uploadStream)
-
-    return true
+    // return { imageUrl: result.secure_url }
   }
 }

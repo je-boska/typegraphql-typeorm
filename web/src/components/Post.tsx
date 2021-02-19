@@ -13,6 +13,7 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
+  Image,
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { PostType } from '../types'
@@ -66,11 +67,13 @@ export const Post: React.FC<PostProps> = ({
               {moment(post.createdAt).fromNow()}
             </Text>
           </Box>
-
-          <Heading size='md' mb={2}>
-            {post.title}
-          </Heading>
-          <Text mb={2}>{post.body}</Text>
+          {post.title && (
+            <Heading size='md' mb={2}>
+              {post.title}
+            </Heading>
+          )}
+          {post.body && <Text mb={2}>{post.body}</Text>}
+          {post.image && <Image src={post.image} />}
         </Box>
         {post.userId === userId && (
           <Flex ml='auto' direction='column'>

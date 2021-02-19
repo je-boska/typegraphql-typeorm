@@ -46,6 +46,7 @@ export type Post = {
   id: Scalars['String'];
   title: Scalars['String'];
   body: Scalars['String'];
+  image: Scalars['String'];
   user: User;
   name: Scalars['String'];
   userId: Scalars['String'];
@@ -71,7 +72,7 @@ export type Mutation = {
   createPost: Post;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
-  uploadPhoto: Scalars['Boolean'];
+  uploadPhoto: UploadResponse;
   follow: Scalars['Boolean'];
   unfollow: Scalars['Boolean'];
   register: UserResponse;
@@ -132,11 +133,19 @@ export type MutationUpdateUserArgs = {
 export type CreatePostInput = {
   title: Scalars['String'];
   body: Scalars['String'];
+  image: Scalars['String'];
 };
 
 export type UpdatePostInput = {
   title?: Maybe<Scalars['String']>;
   body?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
+};
+
+export type UploadResponse = {
+  __typename?: 'UploadResponse';
+  imageUrl?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']>;
 };
 
 
@@ -174,7 +183,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'updatedAt' | 'name' | 'userId'>
+    & Pick<Post, 'id' | 'title' | 'body' | 'image' | 'createdAt' | 'updatedAt' | 'name' | 'userId'>
   )> }
 );
 
@@ -240,7 +249,10 @@ export type UploadImageMutationVariables = Exact<{
 
 export type UploadImageMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'uploadPhoto'>
+  & { uploadPhoto: (
+    { __typename?: 'UploadResponse' }
+    & Pick<UploadResponse, 'imageUrl' | 'error'>
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -383,6 +395,7 @@ export const PostsDocument = gql`
     id
     title
     body
+    image
     createdAt
     updatedAt
     name
@@ -559,7 +572,10 @@ export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
 export const UploadImageDocument = gql`
     mutation UploadImage($photo: Upload!) {
-  uploadPhoto(photo: $photo)
+  uploadPhoto(photo: $photo) {
+    imageUrl
+    error
+  }
 }
     `;
 export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation, UploadImageMutationVariables>;

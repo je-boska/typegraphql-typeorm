@@ -1,3 +1,6 @@
 mutation UploadImage($photo: Upload!) {
-  uploadPhoto(photo: $photo)
+  uploadPhoto(photo: $photo) {
+    imageUrl
+    error
+  }
 }
