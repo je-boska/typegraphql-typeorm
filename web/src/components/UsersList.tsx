@@ -62,7 +62,6 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
 
   return (
     <Box w={250} alignSelf='flex-start' mr={4} mt={4}>
-      {' '}
       <Profile
         user={selectedUser}
         profileOpen={profileOpen}

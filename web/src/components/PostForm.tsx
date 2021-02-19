@@ -136,15 +136,15 @@ export const PostForm: React.FC<PostFormProps> = ({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        <Image src={image} mt={4} />
-        <Button p={2} mt={2} mr={2} type='submit'>
+        <Button p={2} mt={4} mr={2} type='submit'>
           Submit
         </Button>
         {heading === 'Update Post' && (
-          <Button p={2} mt={2} type='button' onClick={() => resetForm()}>
+          <Button p={2} mt={4} type='button' onClick={() => resetForm()}>
             Cancel
           </Button>
         )}
+        {image && <Image src={image} mt={4} />}
       </form>
     </Box>
   )
