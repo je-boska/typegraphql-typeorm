@@ -51,6 +51,7 @@ export const PostForm: React.FC<PostFormProps> = ({
     if (data) {
       setTitle(data.post.title)
       setBody(data.post.body)
+      setImage(data.post.image)
     }
   }, [data])
 
@@ -70,6 +71,7 @@ export const PostForm: React.FC<PostFormProps> = ({
         data: {
           title,
           body,
+          image,
         },
       },
     })
@@ -81,6 +83,7 @@ export const PostForm: React.FC<PostFormProps> = ({
     setPostId('')
     setTitle('')
     setBody('')
+    setImage('')
   }
 
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {

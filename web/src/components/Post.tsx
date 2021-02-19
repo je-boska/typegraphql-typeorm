@@ -57,34 +57,49 @@ export const Post: React.FC<PostProps> = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Flex maxW='500px' borderWidth={1} borderRadius={4} p={4} mt={4}>
-        <Box pr={2}>
-          <Box mb={2}>
-            <Text as='span' color='blue.500'>
-              {post.name}{' '}
-            </Text>
-            <Text as='span' mb={2} opacity='0.4'>
-              {moment(post.createdAt).fromNow()}
-            </Text>
+      <Flex
+        maxW='500px'
+        borderWidth={1}
+        borderRadius={4}
+        p={4}
+        mt={4}
+        direction='column'
+      >
+        <Flex>
+          <Box pr={2}>
+            <Box mb={2}>
+              <Text as='span' color='blue.500'>
+                {post.name}{' '}
+              </Text>
+              <Text as='span' mb={2} opacity='0.4'>
+                {moment(post.createdAt).fromNow()}
+              </Text>
+            </Box>
+            {post.title && (
+              <Heading size='md' mb={2}>
+                {post.title}
+              </Heading>
+            )}
           </Box>
-          {post.title && (
-            <Heading size='md' mb={2}>
-              {post.title}
-            </Heading>
+          {post.userId === userId && (
+            <Flex ml='auto' direction='row'>
+              <Button w={2} onClick={onOpen} bgColor='transparent'>
+                <DeleteIcon />
+              </Button>
+              <Button
+                w={2}
+                onClick={() => selectPost(post)}
+                bgColor='transparent'
+              >
+                <EditIcon />
+              </Button>
+            </Flex>
           )}
-          {post.body && <Text mb={2}>{post.body}</Text>}
-          {post.image && <Image src={post.image} />}
-        </Box>
-        {post.userId === userId && (
-          <Flex ml='auto' direction='column'>
-            <Button onClick={onOpen} bgColor='transparent'>
-              <DeleteIcon />
-            </Button>
-            <Button onClick={() => selectPost(post)} bgColor='transparent'>
-              <EditIcon />
-            </Button>
-          </Flex>
+        </Flex>
+        {post.image && (
+          <Image mt={2} mb={4} src={post.image} alt={post.title} />
         )}
+        {post.body && <Text mb={2}>{post.body}</Text>}
       </Flex>
     </>
   )

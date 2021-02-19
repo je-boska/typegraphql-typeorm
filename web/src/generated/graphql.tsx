@@ -196,7 +196,7 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post: (
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'updatedAt'>
+    & Pick<Post, 'id' | 'title' | 'body' | 'image' | 'createdAt' | 'updatedAt'>
   ) }
 );
 
@@ -435,6 +435,7 @@ export const PostDocument = gql`
     id
     title
     body
+    image
     createdAt
     updatedAt
   }

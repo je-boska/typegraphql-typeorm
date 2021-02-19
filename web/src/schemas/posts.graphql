@@ -16,6 +16,7 @@ query Post($id: String!) {
     id
     title
     body
+    image
     createdAt
     updatedAt
   }

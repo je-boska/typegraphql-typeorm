@@ -147,7 +147,7 @@ const Home: React.FC = () => {
                 />
               ))}
             </Box>
-            <Flex mt={4} justify='flex-end'>
+            <Flex mt={4} mb={8} justify='flex-end'>
               {offset !== 0 && (
                 <Button
                   mr={2}
