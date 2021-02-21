@@ -47,6 +47,7 @@ export type Post = {
   title: Scalars['String'];
   body: Scalars['String'];
   image: Scalars['String'];
+  imageId: Scalars['String'];
   user: User;
   name: Scalars['String'];
   userId: Scalars['String'];
@@ -72,13 +73,14 @@ export type Mutation = {
   createPost: Post;
   updatePost: Post;
   deletePost: Scalars['Boolean'];
-  uploadPhoto: UploadResponse;
   follow: Scalars['Boolean'];
   unfollow: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
   updateUser: User;
   logout: Scalars['Boolean'];
+  uploadImage: UploadResponse;
+  deleteImage: Scalars['Boolean'];
 };
 
 
@@ -96,11 +98,6 @@ export type MutationUpdatePostArgs = {
 
 export type MutationDeletePostArgs = {
   id: Scalars['String'];
-};
-
-
-export type MutationUploadPhotoArgs = {
-  photo: Scalars['Upload'];
 };
 
 
@@ -130,24 +127,29 @@ export type MutationUpdateUserArgs = {
   data: RegisterUserInput;
 };
 
+
+export type MutationUploadImageArgs = {
+  image: Scalars['Upload'];
+};
+
+
+export type MutationDeleteImageArgs = {
+  imageId: Scalars['String'];
+};
+
 export type CreatePostInput = {
   title: Scalars['String'];
   body: Scalars['String'];
   image: Scalars['String'];
+  imageId: Scalars['String'];
 };
 
 export type UpdatePostInput = {
   title?: Maybe<Scalars['String']>;
   body?: Maybe<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
+  imageId?: Maybe<Scalars['String']>;
 };
-
-export type UploadResponse = {
-  __typename?: 'UploadResponse';
-  imageUrl?: Maybe<Scalars['String']>;
-  error?: Maybe<Scalars['String']>;
-};
-
 
 export type UserResponse = {
   __typename?: 'UserResponse';
@@ -174,6 +176,14 @@ export type LoginUserInput = {
   password: Scalars['String'];
 };
 
+export type UploadResponse = {
+  __typename?: 'UploadResponse';
+  imageUrl?: Maybe<Scalars['String']>;
+  imageId?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']>;
+};
+
+
 export type PostsQueryVariables = Exact<{
   offset?: Maybe<Scalars['Int']>;
 }>;
@@ -183,7 +193,7 @@ export type PostsQuery = (
   { __typename?: 'Query' }
   & { posts: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'body' | 'image' | 'createdAt' | 'updatedAt' | 'name' | 'userId'>
+    & Pick<Post, 'id' | 'title' | 'body' | 'image' | 'imageId' | 'createdAt' | 'updatedAt' | 'name' | 'userId'>
   )> }
 );
 
@@ -210,7 +220,7 @@ export type CreatePostMutation = (
   { __typename?: 'Mutation' }
   & { createPost: (
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'body'>
+    & Pick<Post, 'id' | 'title' | 'body' | 'image' | 'imageId'>
     & { user: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
@@ -243,16 +253,26 @@ export type DeletePostMutation = (
 );
 
 export type UploadImageMutationVariables = Exact<{
-  photo: Scalars['Upload'];
+  image: Scalars['Upload'];
 }>;
 
 
 export type UploadImageMutation = (
   { __typename?: 'Mutation' }
-  & { uploadPhoto: (
+  & { uploadImage: (
     { __typename?: 'UploadResponse' }
-    & Pick<UploadResponse, 'imageUrl' | 'error'>
+    & Pick<UploadResponse, 'imageUrl' | 'imageId' | 'error'>
   ) }
+);
+
+export type DeleteImageMutationVariables = Exact<{
+  imageId: Scalars['String'];
+}>;
+
+
+export type DeleteImageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteImage'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -396,6 +416,7 @@ export const PostsDocument = gql`
     title
     body
     image
+    imageId
     createdAt
     updatedAt
     name
@@ -473,6 +494,8 @@ export const CreatePostDocument = gql`
     id
     title
     body
+    image
+    imageId
     user {
       id
       name
@@ -572,9 +595,10 @@ export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutati
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
 export const UploadImageDocument = gql`
-    mutation UploadImage($photo: Upload!) {
-  uploadPhoto(photo: $photo) {
+    mutation UploadImage($image: Upload!) {
+  uploadImage(image: $image) {
     imageUrl
+    imageId
     error
   }
 }
@@ -594,7 +618,7 @@ export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation,
  * @example
  * const [uploadImageMutation, { data, loading, error }] = useUploadImageMutation({
  *   variables: {
- *      photo: // value for 'photo'
+ *      image: // value for 'image'
  *   },
  * });
  */
@@ -604,6 +628,36 @@ export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const DeleteImageDocument = gql`
+    mutation DeleteImage($imageId: String!) {
+  deleteImage(imageId: $imageId)
+}
+    `;
+export type DeleteImageMutationFn = Apollo.MutationFunction<DeleteImageMutation, DeleteImageMutationVariables>;
+
+/**
+ * __useDeleteImageMutation__
+ *
+ * To run a mutation, you first call `useDeleteImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteImageMutation, { data, loading, error }] = useDeleteImageMutation({
+ *   variables: {
+ *      imageId: // value for 'imageId'
+ *   },
+ * });
+ */
+export function useDeleteImageMutation(baseOptions?: Apollo.MutationHookOptions<DeleteImageMutation, DeleteImageMutationVariables>) {
+        return Apollo.useMutation<DeleteImageMutation, DeleteImageMutationVariables>(DeleteImageDocument, baseOptions);
+      }
+export type DeleteImageMutationHookResult = ReturnType<typeof useDeleteImageMutation>;
+export type DeleteImageMutationResult = Apollo.MutationResult<DeleteImageMutation>;
+export type DeleteImageMutationOptions = Apollo.BaseMutationOptions<DeleteImageMutation, DeleteImageMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

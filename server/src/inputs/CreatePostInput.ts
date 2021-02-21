@@ -10,4 +10,7 @@ export class CreatePostInput {
 
   @Field()
   image: string
+
+  @Field()
+  imageId: string
 }

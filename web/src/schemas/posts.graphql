@@ -4,6 +4,7 @@ query Posts($offset: Int) {
     title
     body
     image
+    imageId
     createdAt
     updatedAt
     name
@@ -27,6 +28,8 @@ mutation CreatePost($data: CreatePostInput!, $userId: String!) {
     id
     title
     body
+    image
+    imageId
     user {
       id
       name

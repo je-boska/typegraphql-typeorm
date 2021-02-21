@@ -3,6 +3,7 @@ export type PostType = {
   title: string
   body: string
   image: string
+  imageId: string
   createdAt: string
   updatedAt: string
   name: string

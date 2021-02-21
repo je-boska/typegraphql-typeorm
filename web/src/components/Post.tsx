@@ -18,6 +18,7 @@ import {
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { PostType } from '../types'
 import moment from 'moment'
+import { useDeleteImageMutation } from '../generated/graphql'
 
 interface PostProps {
   post: PostType
@@ -33,6 +34,7 @@ export const Post: React.FC<PostProps> = ({
   selectPost,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [deleteImage] = useDeleteImageMutation()
 
   return (
     <>
@@ -47,6 +49,7 @@ export const Post: React.FC<PostProps> = ({
               onClick={() => {
                 onClose()
                 deletePost(post.id)
+                deleteImage({ variables: { imageId: post.imageId } })
               }}
               mr={3}
               bgColor='red.400'

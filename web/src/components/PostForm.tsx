@@ -39,6 +39,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [image, setImage] = useState('')
+  const [imageId, setImageId] = useState('')
   const [error, setError] = useState('')
 
   const [createPost] = useCreatePostMutation()
@@ -57,7 +58,7 @@ export const PostForm: React.FC<PostFormProps> = ({
 
   async function handleSubmit() {
     await createPost({
-      variables: { data: { title, body, image }, userId },
+      variables: { data: { title, body, image, imageId }, userId },
     })
     refetchPosts()
     resetForm()
@@ -72,6 +73,7 @@ export const PostForm: React.FC<PostFormProps> = ({
           title,
           body,
           image,
+          imageId,
         },
       },
     })
@@ -84,20 +86,22 @@ export const PostForm: React.FC<PostFormProps> = ({
     setTitle('')
     setBody('')
     setImage('')
+    setImageId('')
   }
 
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
     const { data } = await upload({
-      variables: { photo: e.target.files[0] },
+      variables: { image: e.target.files[0] },
     })
 
-    if (data?.uploadPhoto.imageUrl) {
-      setImage(data?.uploadPhoto.imageUrl)
+    if (data?.uploadImage.imageUrl && data.uploadImage.imageId) {
+      setImage(data.uploadImage.imageUrl)
+      setImageId(data.uploadImage.imageId)
       setError('')
     }
-    if (data?.uploadPhoto.error) {
-      setError(data?.uploadPhoto.error)
+    if (data?.uploadImage.error) {
+      setError(data.uploadImage.error)
     }
   }
 

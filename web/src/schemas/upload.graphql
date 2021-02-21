@@ -1,6 +1,11 @@
-mutation UploadImage($photo: Upload!) {
-  uploadPhoto(photo: $photo) {
+mutation UploadImage($image: Upload!) {
+  uploadImage(image: $image) {
     imageUrl
+    imageId
     error
   }
+}
+
+mutation DeleteImage($imageId: String!) {
+  deleteImage(imageId: $imageId)
 }

@@ -8,6 +8,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
 import { PostResolver } from './resolvers/PostResolver'
 import { UserResolver } from './resolvers/UserResolver'
+import { UploadResolver } from './resolvers/UploadResolver'
 
 async function main() {
   const connection = await createConnection({
@@ -28,7 +29,7 @@ async function main() {
   app.use(cors())
 
   const schema = await buildSchema({
-    resolvers: [PostResolver, UserResolver],
+    resolvers: [PostResolver, UserResolver, UploadResolver],
   })
 
   const server = new ApolloServer({

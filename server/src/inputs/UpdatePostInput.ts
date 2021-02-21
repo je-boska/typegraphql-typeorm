@@ -10,4 +10,7 @@ export class UpdatePostInput {
 
   @Field({ nullable: true })
   image?: string
+
+  @Field({ nullable: true })
+  imageId?: string
 }

@@ -30,6 +30,10 @@ export class Post extends BaseEntity {
   image: string
 
   @Field()
+  @Column()
+  imageId: string
+
+  @Field()
   @ManyToOne(() => User, (user) => user.posts)
   user: User
 
