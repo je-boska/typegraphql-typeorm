@@ -7,10 +7,10 @@ import {
   Button,
   Textarea,
   Image,
-  Text,
   Alert,
   AlertDescription,
   AlertIcon,
+  useColorMode,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {
@@ -41,6 +41,8 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [image, setImage] = useState('')
   const [imageId, setImageId] = useState('')
   const [error, setError] = useState('')
+
+  const { colorMode } = useColorMode()
 
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
@@ -132,8 +134,43 @@ export const PostForm: React.FC<PostFormProps> = ({
           onChange={(e) => setBody(e.target.value)}
           value={body}
         />
-        <Input type='file' onChange={(e) => uploadPhoto(e)} />
-        {loading && <Text>Loading...</Text>}
+        <Box
+          mt={2}
+          mb={2}
+          transition='0.1s border linear'
+          display='inline-block'
+          padding='8px 0px 8px 0px'
+          cursor='pointer'
+          border={
+            colorMode === 'dark'
+              ? '1px solid rgba(255, 255, 255, 0.2)'
+              : '1px solid rgba(0, 0, 0, 0.1)'
+          }
+          borderRadius='7px'
+          _hover={{
+            border:
+              colorMode === 'dark'
+                ? '1px solid rgba(255, 255, 255, 0.3)'
+                : '1px solid rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <label
+            style={{
+              fontWeight: 500,
+              cursor: 'pointer',
+              padding: '8px',
+            }}
+          >
+            {loading ? 'Loading' : !image ? 'Add Image' : 'Replace Image'}
+            <input
+              type='file'
+              style={{ display: 'none' }}
+              accept='image/png, image/jpg, image/jpeg'
+              onChange={uploadPhoto}
+            />
+          </label>
+        </Box>
+        <br />
         {error && (
           <Alert mb={4} mt={4}>
             <AlertIcon />
