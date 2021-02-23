@@ -64,16 +64,27 @@ export const PostForm: React.FC<PostFormProps> = ({
     }
   }, [data])
 
+  function validateInput(): boolean {
+    if (!title && !body && !image) {
+      setError("Can't submit empty post.")
+      return false
+    }
+    return true
+  }
+
   async function handleSubmit() {
+    if (!validateInput()) return
     await createPost({
       variables: { data: { title, body, image, imageId }, userId },
     })
     refetchPosts()
+    setError('')
     resetForm()
   }
 
   async function handleUpdateSubmit() {
     if (!postId) return
+    if (!validateInput()) return
     await updatePost({
       variables: {
         id: postId,
@@ -86,6 +97,7 @@ export const PostForm: React.FC<PostFormProps> = ({
       },
     })
     refetchPosts()
+    setError('')
     resetForm()
   }
 
@@ -95,6 +107,7 @@ export const PostForm: React.FC<PostFormProps> = ({
     setBody('')
     setImage('')
     setImageId('')
+    setError('')
   }
 
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
