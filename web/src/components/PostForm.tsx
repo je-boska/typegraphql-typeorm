@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from '@apollo/client'
+import { CloseIcon } from '@chakra-ui/icons'
 import {
   Box,
   Heading,
@@ -12,11 +13,13 @@ import {
   AlertIcon,
   useColorMode,
   Spinner,
+  IconButton,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {
   PostsQuery,
   useCreatePostMutation,
+  useDeleteImageMutation,
   usePostQuery,
   useUpdatePostMutation,
   useUploadImageMutation,
@@ -48,6 +51,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [createPost] = useCreatePostMutation()
   const [updatePost] = useUpdatePostMutation()
   const [upload, { loading }] = useUploadImageMutation()
+  const [deleteImage] = useDeleteImageMutation()
 
   const { data } = usePostQuery({ variables: { id: postId } })
 
@@ -56,6 +60,7 @@ export const PostForm: React.FC<PostFormProps> = ({
       setTitle(data.post.title)
       setBody(data.post.body)
       setImage(data.post.image)
+      setImageId(data.post.imageId)
     }
   }, [data])
 
@@ -105,6 +110,14 @@ export const PostForm: React.FC<PostFormProps> = ({
     }
     if (data?.uploadImage.error) {
       setError(data.uploadImage.error)
+    }
+  }
+
+  function deleteImageIfNoPostId() {
+    if (!postId) {
+      deleteImage({ variables: { imageId } })
+      setImage('')
+      setImageId('')
     }
   }
 
@@ -192,7 +205,20 @@ export const PostForm: React.FC<PostFormProps> = ({
             Cancel
           </Button>
         )}
-        {image && <Image src={image} mt={4} />}
+        {image && (
+          <Box>
+            <IconButton
+              m={2}
+              color='white'
+              position='absolute'
+              variant='outline'
+              icon={<CloseIcon aria-label='Delete Image' />}
+              aria-label='Delete Image'
+              onClick={deleteImageIfNoPostId}
+            />
+            <Image src={image} mt={4} />
+          </Box>
+        )}
       </form>
     </Box>
   )
