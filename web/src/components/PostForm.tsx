@@ -11,6 +11,7 @@ import {
   AlertDescription,
   AlertIcon,
   useColorMode,
+  Spinner,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {
@@ -161,7 +162,13 @@ export const PostForm: React.FC<PostFormProps> = ({
               padding: '8px',
             }}
           >
-            {loading ? 'Loading' : !image ? 'Add Image' : 'Replace Image'}
+            {loading ? (
+              <Spinner mt={2} />
+            ) : !image ? (
+              'Add Image'
+            ) : (
+              'Replace Image'
+            )}
             <input
               type='file'
               style={{ display: 'none' }}

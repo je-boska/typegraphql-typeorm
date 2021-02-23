@@ -4,13 +4,6 @@ import {
   Button,
   Flex,
   Heading,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Text,
   useDisclosure,
   Image,
@@ -19,6 +12,7 @@ import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { PostType } from '../types'
 import moment from 'moment'
 import { useDeleteImageMutation } from '../generated/graphql'
+import { DeletePostModal } from './DeletePostModal'
 
 interface PostProps {
   post: PostType
@@ -36,30 +30,21 @@ export const Post: React.FC<PostProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [deleteImage] = useDeleteImageMutation()
 
+  function deletePostHandler(id: string) {
+    if (post.imageId) {
+      deleteImage({ variables: { imageId: post.imageId } })
+    }
+    deletePost(id)
+  }
+
   return (
     <>
-      <Modal isCentered isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Delete Post</ModalHeader>
-          <ModalBody>Are you sure you want to delete this post?</ModalBody>
-          <ModalCloseButton />
-          <ModalFooter>
-            <Button
-              onClick={() => {
-                onClose()
-                deletePost(post.id)
-                deleteImage({ variables: { imageId: post.imageId } })
-              }}
-              mr={3}
-              bgColor='red.400'
-            >
-              Delete
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <DeletePostModal
+        isOpen={isOpen}
+        onClose={onClose}
+        postId={post.id}
+        deletePost={deletePostHandler}
+      />
       <Flex
         maxW='500px'
         borderWidth={1}
