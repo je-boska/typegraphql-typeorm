@@ -213,7 +213,7 @@ export const PostForm: React.FC<PostFormProps> = ({
         <Button p={2} mt={4} mr={2} type='submit'>
           Submit
         </Button>
-        {heading === 'Update Post' && (
+        {heading === 'Edit Post' && (
           <Button p={2} mt={4} type='button' onClick={() => resetForm()}>
             Cancel
           </Button>

@@ -131,7 +131,7 @@ const Home: React.FC = () => {
                 <PostForm
                   postId={postId}
                   setPostId={setPostId}
-                  heading='Update Post'
+                  heading='Edit Post'
                   userId={userData.me.id}
                   refetchPosts={refetchPosts}
                 />
