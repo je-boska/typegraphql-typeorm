@@ -8,6 +8,7 @@ import {
   InputRightElement,
   Text,
   useDisclosure,
+  useMediaQuery,
 } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import {
@@ -32,6 +33,8 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
 
   const [selectedUser, setSelectedUser] = useState<OtherUserType | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
+
+  const [isLargerThan850] = useMediaQuery('(min-width: 850px)')
 
   const {
     isOpen: profileOpen,
@@ -61,7 +64,13 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
   }
 
   return (
-    <Box w={250} alignSelf='flex-start' mr={4} mt={4}>
+    <Box
+      w={isLargerThan850 ? 250 : 500}
+      alignSelf='flex-start'
+      ml={4}
+      mr={4}
+      mt={4}
+    >
       <Profile
         user={selectedUser}
         profileOpen={profileOpen}

@@ -14,6 +14,7 @@ import {
   IconButton,
   Button,
   useDisclosure,
+  Spinner,
 } from '@chakra-ui/react'
 import { PostForm } from '../components/PostForm'
 import { Post } from '../components/Post'
@@ -72,9 +73,9 @@ const Home: React.FC = () => {
 
   if (!userData) {
     return (
-      <Box m={8}>
-        <Text>Loading...</Text>
-      </Box>
+      <Container m={16} centerContent>
+        <Spinner />
+      </Container>
     )
   }
 
@@ -112,7 +113,7 @@ const Home: React.FC = () => {
         />
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
-      <Flex maxW='100%' wrap='wrap'>
+      <Flex maxW='100%' wrap='wrap' justify='center'>
         <UsersList user={userData.me} refetchPosts={refetchPosts} />
         <Box>
           <Flex justify='center' direction='column'>
