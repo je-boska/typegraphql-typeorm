@@ -44,6 +44,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   const [body, setBody] = useState('')
   const [image, setImage] = useState('')
   const [imageId, setImageId] = useState('')
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([])
   const [error, setError] = useState('')
 
   const { colorMode } = useColorMode()
@@ -72,6 +73,12 @@ export const PostForm: React.FC<PostFormProps> = ({
     return true
   }
 
+  function imageCleanup() {
+    imagesToDelete.forEach(async (imageId) => {
+      await deleteImage({ variables: { imageId } })
+    })
+  }
+
   async function handleSubmit() {
     if (!validateInput()) return
     await createPost({
@@ -85,6 +92,9 @@ export const PostForm: React.FC<PostFormProps> = ({
   async function handleUpdateSubmit() {
     if (!postId) return
     if (!validateInput()) return
+
+    imageCleanup()
+
     await updatePost({
       variables: {
         id: postId,
@@ -101,17 +111,17 @@ export const PostForm: React.FC<PostFormProps> = ({
     resetForm()
   }
 
-  function resetForm() {
-    setPostId('')
-    setTitle('')
-    setBody('')
-    setImage('')
-    setImageId('')
-    setError('')
-  }
-
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
+
+    if (imageId && postId) {
+      setImagesToDelete(imagesToDelete.concat(imageId))
+    }
+
+    if (imageId && !postId) {
+      deleteImage({ variables: { imageId } })
+    }
+
     const { data } = await upload({
       variables: { image: e.target.files[0] },
     })
@@ -126,12 +136,37 @@ export const PostForm: React.FC<PostFormProps> = ({
     }
   }
 
-  function deleteImageIfNoPostId() {
+  function resetForm() {
+    setPostId('')
+    setTitle('')
+    setBody('')
+    setImage('')
+    setImageId('')
+    setImagesToDelete([])
+    setError('')
+  }
+
+  function cancelImageHandler() {
     if (!postId) {
       deleteImage({ variables: { imageId } })
-      setImage('')
-      setImageId('')
+    } else {
+      setImagesToDelete(imagesToDelete.concat(imageId))
     }
+    setImage('')
+    setImageId('')
+  }
+
+  function cancelHandler() {
+    resetForm()
+    const imagesToDeleteAndCurrentImage = imagesToDelete
+    if (imageId) {
+      imagesToDeleteAndCurrentImage.push(imageId)
+    }
+    imagesToDeleteAndCurrentImage
+      .filter((img) => img !== data?.post.imageId)
+      .forEach(async (imageId) => {
+        await deleteImage({ variables: { imageId } })
+      })
   }
 
   return (
@@ -214,7 +249,7 @@ export const PostForm: React.FC<PostFormProps> = ({
           Submit
         </Button>
         {heading === 'Edit Post' && (
-          <Button p={2} mt={4} type='button' onClick={() => resetForm()}>
+          <Button p={2} mt={4} type='button' onClick={cancelHandler}>
             Cancel
           </Button>
         )}
@@ -227,7 +262,7 @@ export const PostForm: React.FC<PostFormProps> = ({
               variant='outline'
               icon={<CloseIcon aria-label='Delete Image' />}
               aria-label='Delete Image'
-              onClick={deleteImageIfNoPostId}
+              onClick={cancelImageHandler}
             />
             <Image src={image} mt={4} />
           </Box>
