@@ -111,15 +111,19 @@ export const PostForm: React.FC<PostFormProps> = ({
     resetForm()
   }
 
+  function handleImageDeletion() {
+    if (postId) {
+      setImagesToDelete(imagesToDelete.concat(imageId))
+      return
+    }
+    deleteImage({ variables: { imageId } })
+  }
+
   async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
 
-    if (imageId && postId) {
-      setImagesToDelete(imagesToDelete.concat(imageId))
-    }
-
-    if (imageId && !postId) {
-      deleteImage({ variables: { imageId } })
+    if (imageId) {
+      handleImageDeletion()
     }
 
     const { data } = await upload({
