@@ -31,7 +31,7 @@ const Home: React.FC = () => {
   const [token, setToken] = useState('')
   const { colorMode, toggleColorMode } = useColorMode()
 
-  const { data: userData } = useMeQuery()
+  const { data: userData, refetch: refetchMe } = useMeQuery()
   const { data: postData, refetch: refetchPosts } = usePostsQuery({
     variables: { offset: offset },
   })
@@ -114,7 +114,11 @@ const Home: React.FC = () => {
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
       <Flex maxW='100%' wrap='wrap' justify='center'>
-        <UsersList user={userData.me} refetchPosts={refetchPosts} />
+        <UsersList
+          user={userData.me}
+          refetchPosts={refetchPosts}
+          refetchMe={refetchMe}
+        />
         <Box>
           <Flex justify='center' direction='column'>
             <Box>

@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import {
-  MeDocument,
+  MeQuery,
   PostsQuery,
   useFollowMutation,
   useUnfollowMutation,
@@ -24,9 +24,14 @@ import { Profile } from './Profile'
 interface UsersListProps {
   user: UserType
   refetchPosts: () => Promise<ApolloQueryResult<PostsQuery>>
+  refetchMe: () => Promise<ApolloQueryResult<MeQuery>>
 }
 
-export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
+export const UsersList: React.FC<UsersListProps> = ({
+  user,
+  refetchPosts,
+  refetchMe,
+}) => {
   const { data: users } = useUsersQuery()
   const [follow] = useFollowMutation()
   const [unfollow] = useUnfollowMutation()
@@ -45,16 +50,16 @@ export const UsersList: React.FC<UsersListProps> = ({ user, refetchPosts }) => {
   async function followHandler(followId: string) {
     await follow({
       variables: { userId: user.id, followId },
-      refetchQueries: [{ query: MeDocument }],
     })
+    refetchMe()
     refetchPosts()
   }
 
   async function unfollowHandler(followId: string) {
     await unfollow({
       variables: { userId: user.id, followId },
-      refetchQueries: [{ query: MeDocument }],
     })
+    refetchMe()
     refetchPosts()
   }
 
