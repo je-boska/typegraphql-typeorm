@@ -11,6 +11,12 @@ export class RegisterUserInput {
   @Field()
   about: string
 
+  @Field({nullable: true})
+  avatar?: string
+
+  @Field({nullable: true})
+  avatarId?: string
+
   @Field()
   password: string
 }

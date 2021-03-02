@@ -9,6 +9,7 @@ import {
   ModalBody,
   Text,
   Heading,
+  Avatar,
 } from '@chakra-ui/react'
 import React from 'react'
 import { OtherUserType } from '../types'
@@ -49,6 +50,7 @@ export const Profile: React.FC<ProfileProps> = ({
       <ModalContent>
         <ModalCloseButton />
         <ModalBody>
+          <Avatar mt={4} size='xl' src={user.avatar} name={user.name} />
           <Heading mt={4} mb={4}>
             {user.name}
           </Heading>

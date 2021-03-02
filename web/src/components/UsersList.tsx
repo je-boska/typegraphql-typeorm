@@ -1,5 +1,6 @@
 import { ApolloQueryResult } from '@apollo/client'
 import {
+  Avatar,
   Box,
   Button,
   Flex,
@@ -119,6 +120,7 @@ export const UsersList: React.FC<UsersListProps> = ({
                   onProfileOpen()
                 }}
               >
+                <Avatar size='xs' mr={2} mb={2} src={u.avatar} name={u.name} />
                 {u.name}
               </Text>
               <Text
@@ -146,6 +148,13 @@ export const UsersList: React.FC<UsersListProps> = ({
                     onProfileOpen()
                   }}
                 >
+                  <Avatar
+                    size='xs'
+                    mr={2}
+                    mb={2}
+                    src={u.avatar}
+                    name={u.name}
+                  />
                   {u.name}
                 </Text>
                 <Text

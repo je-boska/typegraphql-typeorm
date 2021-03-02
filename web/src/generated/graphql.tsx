@@ -61,6 +61,8 @@ export type User = {
   name: Scalars['String'];
   email: Scalars['String'];
   about: Scalars['String'];
+  avatar: Scalars['String'];
+  avatarId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   posts: Array<Post>;
@@ -168,6 +170,8 @@ export type RegisterUserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
   about: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
+  avatarId?: Maybe<Scalars['String']>;
   password: Scalars['String'];
 };
 
@@ -282,13 +286,13 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'email' | 'about' | 'createdAt'>
+    & Pick<User, 'id' | 'name' | 'email' | 'about' | 'avatar' | 'avatarId' | 'createdAt'>
     & { posts: Array<(
       { __typename?: 'Post' }
       & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'updatedAt'>
     )>, follows: Array<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'name' | 'about' | 'createdAt'>
+      & Pick<User, 'id' | 'name' | 'about' | 'avatar' | 'createdAt'>
       & { posts: Array<(
         { __typename?: 'Post' }
         & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'updatedAt'>
@@ -304,7 +308,7 @@ export type UsersQuery = (
   { __typename?: 'Query' }
   & { users: Array<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'about' | 'createdAt'>
+    & Pick<User, 'id' | 'name' | 'about' | 'avatar' | 'createdAt'>
     & { posts: Array<(
       { __typename?: 'Post' }
       & Pick<Post, 'id' | 'title' | 'body' | 'createdAt' | 'updatedAt'>
@@ -666,6 +670,8 @@ export const MeDocument = gql`
     name
     email
     about
+    avatar
+    avatarId
     createdAt
     posts {
       id
@@ -678,6 +684,7 @@ export const MeDocument = gql`
       id
       name
       about
+      avatar
       createdAt
       posts {
         id
@@ -721,6 +728,7 @@ export const UsersDocument = gql`
     id
     name
     about
+    avatar
     createdAt
     posts {
       id

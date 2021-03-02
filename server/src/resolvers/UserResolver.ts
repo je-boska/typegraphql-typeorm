@@ -172,13 +172,13 @@ export class UserResolver {
     const token = req.headers.authorization?.split(' ')[1] || ''
     const id = verifyToken(token)
 
-    const { name, email, about } = data
+    const { name, email, about, avatar, avatarId } = data
     const hashedPassword = await argon2.hash(data.password)
 
     const updatedUser = await getConnection()
       .createQueryBuilder()
       .update(User)
-      .set({ name, email, about, password: hashedPassword })
+      .set({ name, email, about, avatar, avatarId, password: hashedPassword })
       .where({ id })
       .returning('*')
       .execute()

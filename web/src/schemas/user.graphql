@@ -4,6 +4,8 @@ query Me {
     name
     email
     about
+    avatar
+    avatarId
     createdAt
     posts {
       id
@@ -16,6 +18,7 @@ query Me {
       id
       name
       about
+      avatar
       createdAt
       posts {
         id
@@ -33,6 +36,7 @@ query Users {
     id
     name
     about
+    avatar
     createdAt
     posts {
       id

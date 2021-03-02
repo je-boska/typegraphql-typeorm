@@ -15,6 +15,8 @@ export type UserType = {
   name: string
   email: string
   about: string
+  avatar: string
+  avatarId: string
   createdAt: string
   follows: OtherUserType[]
 }
@@ -23,5 +25,6 @@ export type OtherUserType = {
   id: string
   name: string
   about: string
+  avatar: string
   createdAt: string
 }
