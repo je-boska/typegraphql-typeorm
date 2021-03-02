@@ -7,6 +7,7 @@ export type PostType = {
   createdAt: string
   updatedAt: string
   name: string
+  avatar: string
   userId: string
 }
 

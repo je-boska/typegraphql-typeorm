@@ -8,6 +8,7 @@ query Posts($offset: Int) {
     createdAt
     updatedAt
     name
+    avatar
     userId
   }
 }

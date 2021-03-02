@@ -7,6 +7,7 @@ import {
   Text,
   useDisclosure,
   Image,
+  Avatar,
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { PostType } from '../types'
@@ -56,6 +57,7 @@ export const Post: React.FC<PostProps> = ({
         <Flex>
           <Box pr={2}>
             <Box mb={2}>
+              <Avatar size='xs' mr={2} src={post.avatar} name={post.name} />
               <Text as='span' color='blue.500'>
                 {post.name}{' '}
               </Text>

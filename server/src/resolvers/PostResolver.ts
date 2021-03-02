@@ -34,7 +34,7 @@ export class PostResolver {
 
     const posts = await getConnection().query(
       `
-    SELECT p.*, u.name 
+    SELECT p.*, u.name, u.avatar
     FROM post p
     JOIN "user" AS u ON "userId" = u.id
     WHERE "userId" IN (

@@ -44,6 +44,9 @@ export class Post extends BaseEntity {
   userId: string
 
   @Field()
+  avatar: string
+
+  @Field()
   @CreateDateColumn()
   createdAt!: Date
 
