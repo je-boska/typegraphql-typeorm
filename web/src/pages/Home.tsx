@@ -19,7 +19,12 @@ import {
 import { PostForm } from '../components/PostForm'
 import { Post } from '../components/Post'
 import { PostType } from '../types'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  MoonIcon,
+  SunIcon,
+} from '@chakra-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { UsersList } from '../components/UsersList'
 import { useApolloClient } from '@apollo/client'
@@ -154,15 +159,21 @@ const Home: React.FC = () => {
             </Box>
             <Flex mt={4} mb={8} justify='flex-end'>
               {offset !== 0 && (
-                <Button
+                <IconButton
+                  aria-label='previous page'
+                  icon={<ArrowLeftIcon />}
                   mr={2}
                   onClick={() => offset >= 5 && setOffset(offset - 5)}
                 >
                   Prev
-                </Button>
+                </IconButton>
               )}
               {postData && postData.posts.length === 5 && (
-                <Button onClick={() => setOffset(offset + 5)}>Next</Button>
+                <IconButton
+                  aria-label='next page'
+                  icon={<ArrowRightIcon />}
+                  onClick={() => setOffset(offset + 5)}
+                />
               )}
             </Flex>
           </Flex>
