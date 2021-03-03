@@ -67,7 +67,6 @@ export const Post: React.FC<PostProps> = ({
         <Flex>
           <Box pr={2}>
             <Box mb={2}>
-              <Avatar size='xs' mr={2} src={post.avatar} name={post.name} />
               <Text
                 as='span'
                 mr={2}
@@ -82,6 +81,7 @@ export const Post: React.FC<PostProps> = ({
                   onProfileOpen()
                 }}
               >
+                <Avatar size='xs' mr={2} src={post.avatar} name={post.name} />
                 {post.name}
               </Text>
               <Text as='span' mb={2} opacity='0.4'>
