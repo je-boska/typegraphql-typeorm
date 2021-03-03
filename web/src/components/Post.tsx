@@ -20,6 +20,11 @@ interface PostProps {
   userId: string
   deletePost: (id: string) => void
   selectPost: (post: PostType) => void
+  setSelectedUser: React.Dispatch<React.SetStateAction<string>>
+  onProfileOpen: () => void
+  onMyProfileOpen: () => void
+  followHandler: (followId: string) => Promise<void>
+  unfollowHandler: (followId: string) => Promise<void>
 }
 
 export const Post: React.FC<PostProps> = ({
@@ -27,6 +32,11 @@ export const Post: React.FC<PostProps> = ({
   userId,
   deletePost,
   selectPost,
+  setSelectedUser,
+  onProfileOpen,
+  onMyProfileOpen,
+  followHandler,
+  unfollowHandler,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [deleteImage] = useDeleteImageMutation()
@@ -58,8 +68,21 @@ export const Post: React.FC<PostProps> = ({
           <Box pr={2}>
             <Box mb={2}>
               <Avatar size='xs' mr={2} src={post.avatar} name={post.name} />
-              <Text as='span' color='blue.500'>
-                {post.name}{' '}
+              <Text
+                as='span'
+                mr={2}
+                color='blue.500'
+                cursor='pointer'
+                onClick={() => {
+                  if (post.userId === userId) {
+                    onMyProfileOpen()
+                    return
+                  }
+                  setSelectedUser(post.userId)
+                  onProfileOpen()
+                }}
+              >
+                {post.name}
               </Text>
               <Text as='span' mb={2} opacity='0.4'>
                 {moment(post.createdAt).fromNow()}

@@ -50,10 +50,11 @@ query Users {
 
 query User($id: String!) {
   user(id: $id) {
+    id
     name
-    follows {
-      name
-    }
+    about
+    avatar
+    createdAt
   }
 }
 

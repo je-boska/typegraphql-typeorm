@@ -10,13 +10,15 @@ import {
   Text,
   Heading,
   Avatar,
+  Spinner,
 } from '@chakra-ui/react'
 import React from 'react'
 import { OtherUserType } from '../types'
 import moment from 'moment'
+import { useUserQuery } from '../generated/graphql'
 
 interface ProfileProps {
-  user: OtherUserType | null
+  userId: string
   profileOpen: boolean
   onProfileClose: () => void
   follow: (followId: string) => void
@@ -25,14 +27,22 @@ interface ProfileProps {
 }
 
 export const Profile: React.FC<ProfileProps> = ({
-  user,
+  userId,
   profileOpen,
   onProfileClose,
   follow,
   unfollow,
   follows,
 }) => {
-  if (!user) {
+  const { data: userData, loading } = useUserQuery({
+    variables: { id: userId },
+  })
+
+  if (loading) {
+    return <Spinner />
+  }
+
+  if (!userData) {
     return (
       <Modal isCentered isOpen={profileOpen} onClose={onProfileClose}>
         <ModalOverlay />
@@ -50,23 +60,30 @@ export const Profile: React.FC<ProfileProps> = ({
       <ModalContent>
         <ModalCloseButton />
         <ModalBody>
-          <Avatar mt={4} size='xl' src={user.avatar} name={user.name} />
+          <Avatar
+            mt={4}
+            size='xl'
+            src={userData.user.avatar}
+            name={userData.user.name}
+          />
           <Heading mt={4} mb={4}>
-            {user.name}
+            {userData.user.name}
           </Heading>
           <Text mb={4} opacity='0.4'>
-            joined {moment(user.createdAt).fromNow()}
+            joined {moment(userData.user.createdAt).fromNow()}
           </Text>
-          <Text>{user.about}</Text>
+          <Text>{userData.user.about}</Text>
         </ModalBody>
         <ModalFooter>
           <Button
             onClick={() => {
-              follows.includes(user) ? unfollow(user.id) : follow(user.id)
+              follows.includes(userData.user)
+                ? unfollow(userData.user.id)
+                : follow(userData.user.id)
               onProfileClose()
             }}
           >
-            {follows.includes(user) ? 'Unfollow' : 'Follow'}
+            {follows.includes(userData.user) ? 'Unfollow' : 'Follow'}
           </Button>
         </ModalFooter>
       </ModalContent>

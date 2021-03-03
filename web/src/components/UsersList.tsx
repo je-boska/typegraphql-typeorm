@@ -1,4 +1,3 @@
-import { ApolloQueryResult } from '@apollo/client'
 import {
   Avatar,
   Box,
@@ -8,61 +7,32 @@ import {
   InputGroup,
   InputRightElement,
   Text,
-  useDisclosure,
   useMediaQuery,
 } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import {
-  MeQuery,
-  PostsQuery,
-  useFollowMutation,
-  useUnfollowMutation,
-  useUsersQuery,
-} from '../generated/graphql'
-import { OtherUserType, UserType } from '../types'
-import { Profile } from './Profile'
+import { useUsersQuery } from '../generated/graphql'
+import { UserType } from '../types'
 
 interface UsersListProps {
   user: UserType
-  refetchPosts: () => Promise<ApolloQueryResult<PostsQuery>>
-  refetchMe: () => Promise<ApolloQueryResult<MeQuery>>
+  setSelectedUser: React.Dispatch<React.SetStateAction<string>>
+  onProfileOpen: () => void
+  followHandler: (followId: string) => Promise<void>
+  unfollowHandler: (followId: string) => Promise<void>
 }
 
 export const UsersList: React.FC<UsersListProps> = ({
   user,
-  refetchPosts,
-  refetchMe,
+  setSelectedUser,
+  onProfileOpen,
+  followHandler,
+  unfollowHandler,
 }) => {
   const { data: users } = useUsersQuery()
-  const [follow] = useFollowMutation()
-  const [unfollow] = useUnfollowMutation()
 
-  const [selectedUser, setSelectedUser] = useState<OtherUserType | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
 
   const [isLargerThan850] = useMediaQuery('(min-width: 850px)')
-
-  const {
-    isOpen: profileOpen,
-    onOpen: onProfileOpen,
-    onClose: onProfileClose,
-  } = useDisclosure()
-
-  async function followHandler(followId: string) {
-    await follow({
-      variables: { userId: user.id, followId },
-    })
-    refetchMe()
-    refetchPosts()
-  }
-
-  async function unfollowHandler(followId: string) {
-    await unfollow({
-      variables: { userId: user.id, followId },
-    })
-    refetchMe()
-    refetchPosts()
-  }
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault()
@@ -77,14 +47,6 @@ export const UsersList: React.FC<UsersListProps> = ({
       mr={4}
       mt={4}
     >
-      <Profile
-        user={selectedUser}
-        profileOpen={profileOpen}
-        onProfileClose={onProfileClose}
-        follow={followHandler}
-        unfollow={unfollowHandler}
-        follows={user.follows}
-      />
       <InputGroup size='md'>
         <Input
           mb={4}
@@ -116,7 +78,7 @@ export const UsersList: React.FC<UsersListProps> = ({
                 color='blue.500'
                 cursor='pointer'
                 onClick={() => {
-                  setSelectedUser(u)
+                  setSelectedUser(u.id)
                   onProfileOpen()
                 }}
               >
@@ -144,7 +106,7 @@ export const UsersList: React.FC<UsersListProps> = ({
                   color='blue.500'
                   cursor='pointer'
                   onClick={() => {
-                    setSelectedUser(u)
+                    setSelectedUser(u.id)
                     onProfileOpen()
                   }}
                 >

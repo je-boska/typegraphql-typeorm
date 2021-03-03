@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import {
   useDeletePostMutation,
+  useFollowMutation,
   useMeQuery,
   usePostsQuery,
+  useUnfollowMutation,
 } from '../generated/graphql'
 import {
   Flex,
@@ -29,12 +31,26 @@ import { useHistory } from 'react-router-dom'
 import { UsersList } from '../components/UsersList'
 import { useApolloClient } from '@apollo/client'
 import { MyProfile } from '../components/MyProfile'
+import { Profile } from '../components/Profile'
 
 const Home: React.FC = () => {
   const [offset, setOffset] = useState(0)
   const [postId, setPostId] = useState('')
   const [token, setToken] = useState('')
+  const [selectedUser, setSelectedUser] = useState('')
+
   const { colorMode, toggleColorMode } = useColorMode()
+  const {
+    isOpen: profileOpen,
+    onOpen: onProfileOpen,
+    onClose: onProfileClose,
+  } = useDisclosure()
+
+  const {
+    isOpen: myProfileOpen,
+    onOpen: onMyProfileOpen,
+    onClose: onMyProfileClose,
+  } = useDisclosure()
 
   const { data: userData, refetch: refetchMe } = useMeQuery()
   const { data: postData, refetch: refetchPosts } = usePostsQuery({
@@ -42,15 +58,11 @@ const Home: React.FC = () => {
   })
 
   const [deletePost] = useDeletePostMutation()
+  const [follow] = useFollowMutation()
+  const [unfollow] = useUnfollowMutation()
 
   const history = useHistory()
   const client = useApolloClient()
-
-  const {
-    isOpen: myProfileOpen,
-    onOpen: onMyProfileOpen,
-    onClose: onMyProfileClose,
-  } = useDisclosure()
 
   useEffect(() => {
     const localToken = localStorage.getItem('user-token')
@@ -74,6 +86,24 @@ const Home: React.FC = () => {
   function selectPostHandler(post: PostType) {
     const { id } = post
     setPostId(id)
+  }
+
+  async function followHandler(followId: string) {
+    if (!userData) return
+    await follow({
+      variables: { userId: userData.me.id, followId },
+    })
+    refetchMe()
+    refetchPosts()
+  }
+
+  async function unfollowHandler(followId: string) {
+    if (!userData) return
+    await unfollow({
+      variables: { userId: userData.me.id, followId },
+    })
+    refetchMe()
+    refetchPosts()
   }
 
   if (!userData) {
@@ -119,10 +149,22 @@ const Home: React.FC = () => {
         <Button onClick={logoutHandler}>Log out</Button>
       </Flex>
       <Flex maxW='100%' wrap='wrap' justify='center'>
+        {selectedUser && (
+          <Profile
+            userId={selectedUser}
+            profileOpen={profileOpen}
+            onProfileClose={onProfileClose}
+            follow={followHandler}
+            unfollow={unfollowHandler}
+            follows={userData.me.follows}
+          />
+        )}
         <UsersList
           user={userData.me}
-          refetchPosts={refetchPosts}
-          refetchMe={refetchMe}
+          setSelectedUser={setSelectedUser}
+          onProfileOpen={onProfileOpen}
+          followHandler={followHandler}
+          unfollowHandler={unfollowHandler}
         />
         <Box>
           <Flex justify='center' direction='column'>
@@ -154,6 +196,11 @@ const Home: React.FC = () => {
                   post={p}
                   deletePost={deletePostHandler}
                   selectPost={selectPostHandler}
+                  setSelectedUser={setSelectedUser}
+                  onProfileOpen={onProfileOpen}
+                  onMyProfileOpen={onMyProfileOpen}
+                  followHandler={followHandler}
+                  unfollowHandler={unfollowHandler}
                 />
               ))}
             </Box>

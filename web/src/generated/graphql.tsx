@@ -326,11 +326,7 @@ export type UserQuery = (
   { __typename?: 'Query' }
   & { user: (
     { __typename?: 'User' }
-    & Pick<User, 'name'>
-    & { follows: Array<(
-      { __typename?: 'User' }
-      & Pick<User, 'name'>
-    )> }
+    & Pick<User, 'id' | 'name' | 'about' | 'avatar' | 'createdAt'>
   ) }
 );
 
@@ -770,10 +766,11 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const UserDocument = gql`
     query User($id: String!) {
   user(id: $id) {
+    id
     name
-    follows {
-      name
-    }
+    about
+    avatar
+    createdAt
   }
 }
     `;
