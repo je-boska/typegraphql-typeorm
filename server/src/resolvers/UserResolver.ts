@@ -111,7 +111,9 @@ export class UserResolver {
       user = User.create({
         name: data.name,
         email: data.email,
-        about: data.about,
+        about: '',
+        avatar: '',
+        avatarId: '',
         password: hashedPassword,
       })
       await user.save()

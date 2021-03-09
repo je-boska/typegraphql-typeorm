@@ -35,11 +35,11 @@ export class User extends BaseEntity {
   about: string
 
   @Field()
-  @Column({nullable: true})
+  @Column({ nullable: true })
   avatar: string
 
   @Field()
-  @Column({nullable: true})
+  @Column({ nullable: true })
   avatarId: string
 
   @Field()

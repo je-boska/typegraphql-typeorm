@@ -16,7 +16,7 @@ async function main() {
     url: process.env.DATABASE_URL,
     entities: ['./src/models/*.ts'],
     synchronize: true,
-    // logging: true,
+    logging: true,
   })
 
   cloudinary.v2.config({

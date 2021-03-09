@@ -31,7 +31,9 @@ const Register: React.FC<{}> = () => {
   async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const { data } = await register({
-      variables: { data: { name, email, password, about: '' } },
+      variables: {
+        data: { name, email, password },
+      },
     })
     if (data?.register.errors) {
       setError(data.register.errors[0].message)

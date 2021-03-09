@@ -8,13 +8,13 @@ export class RegisterUserInput {
   @Field()
   email: string
 
-  @Field()
-  about: string
+  @Field({ nullable: true })
+  about?: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   avatar?: string
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   avatarId?: string
 
   @Field()

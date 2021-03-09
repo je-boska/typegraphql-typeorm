@@ -26,6 +26,8 @@ export class PostResolver {
     const token = req.headers.authorization?.split(' ')[1] || ''
     const id = verifyToken(token)
 
+    console.log('id: ', id)
+
     const sqlArgs: any[] = [id]
 
     if (offset) {

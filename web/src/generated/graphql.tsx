@@ -170,7 +170,7 @@ export type FieldError = {
 export type RegisterUserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
-  about: Scalars['String'];
+  about?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
   avatarId?: Maybe<Scalars['String']>;
   password: Scalars['String'];
