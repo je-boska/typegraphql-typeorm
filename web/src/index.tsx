@@ -8,7 +8,10 @@ import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react'
 import { createUploadLink } from 'apollo-upload-client'
 
 const uploadLink = createUploadLink({
-  uri: '/graphql',
+  uri:
+    process.env.NODE_ENV === 'production'
+      ? '/graphql'
+      : 'http://localhost:4000/graphql',
 })
 
 const authLink = setContext((_, { headers }) => {
