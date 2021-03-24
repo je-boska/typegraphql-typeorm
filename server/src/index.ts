@@ -40,7 +40,7 @@ async function main() {
   })
 
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '/web/build')))
+    app.use(express.static(path.join(__dirname, '../../web/build')))
 
     app.get('*', (req, res) =>
       res.sendFile(path.resolve(__dirname, '../../web', 'build', 'index.html'))
