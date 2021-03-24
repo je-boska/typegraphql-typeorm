@@ -14,7 +14,7 @@ import { UploadResolver } from './resolvers/UploadResolver'
 async function main() {
   const connection = await createConnection({
     type: 'postgres',
-    url: process.env.DATABASE_URL,
+    url: `${process.env.DATABASE_URL}sslmode=require`,
     entities: ['./src/models/*.ts'],
     synchronize: true,
     logging: true,
