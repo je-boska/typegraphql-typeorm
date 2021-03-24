@@ -129,6 +129,10 @@ export class UserResolver {
           ],
         }
       }
+
+      return {
+        errors: err,
+      }
     }
     return { user, token }
   }
