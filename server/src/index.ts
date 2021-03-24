@@ -10,12 +10,14 @@ import { buildSchema } from 'type-graphql'
 import { PostResolver } from './resolvers/PostResolver'
 import { UserResolver } from './resolvers/UserResolver'
 import { UploadResolver } from './resolvers/UploadResolver'
+import { User } from './models/User'
+import { Post } from './models/Post'
 
 async function main() {
   const connection = await createConnection({
     type: 'postgres',
     url: process.env.DATABASE_URL,
-    entities: ['./src/models/*.ts'],
+    entities: [User, Post],
     synchronize: true,
     logging: true,
     ssl:
