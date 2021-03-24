@@ -9,7 +9,7 @@
     "server": "cd server && yarn start",
     "web": "cd web && yarn start",
     "dev": "concurrently \"yarn server\" \"yarn web\"",
-    "heroku-postbuild": "yarn --cwd ~/server/ install && yarn --cwd ~/web/ install && yarn --cwd ~/web/ build"
+    "heroku-postbuild": "yarn --cwd server/ install && yarn --cwd web install && yarn --cwd web build"
   },
   "devDependencies": {
     "concurrently": "^5.3.0"
