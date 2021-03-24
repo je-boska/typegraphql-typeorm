@@ -14,10 +14,11 @@ import { UploadResolver } from './resolvers/UploadResolver'
 async function main() {
   const connection = await createConnection({
     type: 'postgres',
-    url: `${process.env.DATABASE_URL}sslmode=require`,
+    url: process.env.DATABASE_URL,
     entities: ['./src/models/*.ts'],
     synchronize: true,
     logging: true,
+    ssl: true,
   })
 
   cloudinary.v2.config({
