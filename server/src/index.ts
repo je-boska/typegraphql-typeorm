@@ -18,7 +18,7 @@ async function main() {
     entities: ['./src/models/*.ts'],
     synchronize: true,
     logging: true,
-    ssl: true,
+    ssl: { rejectUnauthorized: false },
   })
 
   cloudinary.v2.config({
