@@ -1,6 +1,7 @@
 import 'reflect-metadata'
-import 'dotenv-safe/config'
+import 'dotenv/config'
 import { createConnection } from 'typeorm'
+import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import cloudinary from 'cloudinary'
@@ -36,6 +37,18 @@ async function main() {
     schema,
     context: ({ req }) => ({ req }),
   })
+
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/web/build')))
+
+    app.get('*', (req, res) =>
+      res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+    )
+  } else {
+    app.get('/', (req, res) => {
+      res.send('API is running....')
+    })
+  }
 
   server.applyMiddleware({ app, cors: false })
 

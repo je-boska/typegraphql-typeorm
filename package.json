@@ -8,7 +8,8 @@
   "scripts": {
     "server": "cd server && yarn start",
     "web": "cd web && yarn start",
-    "dev": "concurrently \"yarn server\" \"yarn web\""
+    "dev": "concurrently \"yarn server\" \"yarn web\"",
+    "heroku-postbuild": "yarn --prefix server && yarn --prefix web && yarn build --prefix web"
   },
   "devDependencies": {
     "concurrently": "^5.3.0"
