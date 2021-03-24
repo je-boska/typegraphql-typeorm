@@ -43,7 +43,7 @@ async function main() {
     app.use(express.static(path.join(__dirname, '/web/build')))
 
     app.get('*', (req, res) =>
-      res.sendFile(path.resolve(__dirname, 'web', 'build', 'index.html'))
+      res.sendFile(path.resolve(__dirname, '../../web', 'build', 'index.html'))
     )
   } else {
     app.get('/', (req, res) => {
